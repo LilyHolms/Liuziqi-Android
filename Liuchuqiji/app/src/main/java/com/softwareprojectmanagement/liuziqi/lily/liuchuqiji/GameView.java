@@ -2,6 +2,8 @@ package com.softwareprojectmanagement.liuziqi.lily.liuchuqiji;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 
 /**
  * Created by Lily on 16/3/14.
@@ -25,21 +28,43 @@ public class GameView extends AppCompatActivity {
     private int BOARDSIZE = 19;//棋盘大小
     private int screen_width;//屏幕宽度
     private int playColor=1;//当前走棋玩家颜色
+    private int peopleColor=0;
+    private int AIcolor;
     private int firststep=0;//是否是第一步
     private int chessSum=0;//下了第几个棋，每方走两个棋子
     private int dir[][]={{1,0},{1,1},{0,1},{1,-1}};
     private int countClick=0;
-    int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];
+    private boolean isGameover=false;
+    int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];  //棋盘
 
     private GridView gv_gameView;
     private MyAdapter myAdapter;
+    private Connect6AI myAI=new Connect6AI();   //AI
+    private move nowMove=new move();
+    private int AIaction=0; //是否是AI行动
+
+    protected Handler updateBoardHandler=new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what)
+            {
+                case 1:
+                {
+                    updateDataSet();
+                    break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.include_board);
+        myGame();   //初始化棋盘
         initView();
-        myGame();
     }
+
     void initView() {
         gv_gameView = (GridView) findViewById(R.id.gridview);
         gv_gameView.setNumColumns(BOARDSIZE);
@@ -47,56 +72,71 @@ public class GameView extends AppCompatActivity {
         //为GridView设置适配器
         myAdapter = new MyAdapter(this);
         gv_gameView.setAdapter(myAdapter);
+
+        //设置玩家和AI颜色
+        peopleColor=WHITENUM;
+        initAI(BLACKNUM);
+
         //注册监听事件
         gv_gameView.setOnItemClickListener(new AdapterView.OnItemClickListener() {//落子
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                int nowX,nowY;
-                nowX=position/BOARDSIZE;
-                nowY=position%BOARDSIZE;
-                if(arr_board[nowX][nowY] == KONGNUM){
+                //AI思考中，还未到玩家走棋
+                if (playColor != peopleColor || isGameover)
+                    return;
+                int nowX, nowY;
+                nowX = position / BOARDSIZE;
+                nowY = position % BOARDSIZE;
+                if (arr_board[nowX][nowY] == KONGNUM) {
                     countClick++;
                     chessSum++;
-                    //Toast.makeText(GameView.this, "第"+countClick+"子,落子位置:" + position, Toast.LENGTH_SHORT).show();
-//                    if(countClick%2==0){
-//                        arr_board[position / BOARDSIZE][position % BOARDSIZE] = WHITENUM;
-//                    }else{
-//                        arr_board[position / BOARDSIZE][position % BOARDSIZE] = BLACKNUM;
-//                    }
                     //根据当前玩家颜色来落对应的子
-                    if(playColor==BLACKNUM)
-                    {
+                    if (playColor == BLACKNUM) {
                         arr_board[nowX][nowY] = BLACKNUM;
-                    }
-                    else if(playColor==WHITENUM)
-                    {
+                        nowMove.x[chessSum - 1] = nowX;
+                        nowMove.y[chessSum - 1] = nowY;
+                    } else if (playColor == WHITENUM) {
                         arr_board[nowX][nowY] = WHITENUM;
+                        nowMove.x[chessSum - 1] = nowX;
+                        nowMove.y[chessSum - 1] = nowY;
                     }
                     //判断胜负
-                    if(checkWin(playColor,nowX,nowY))
-                    {
-                        if(playColor==WHITENUM)
-                        {
+                    if (checkWin(playColor, nowX, nowY)) {
+                        if (playColor == WHITENUM) {
                             Toast.makeText(GameView.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
+                        } else {
                             Toast.makeText(GameView.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
                         }
                     }
                     //变色
-                    if(firststep==0 && playColor==BLACKNUM && chessSum==1)
-                    {
-                        firststep=1;
-                        playColor^=3;
-                        chessSum=0;
-                    }
-                    else if(chessSum==2)
-                    {
-                        chessSum=0;
-                        playColor^=3;
+                    if (firststep == 0 && playColor == BLACKNUM && chessSum == 1) {
+                        nowMove.len = 1;
+                        myAI.makeMove(nowMove, playColor);
+                        firststep = 1;
+                        playColor ^= 3;
+                        chessSum = 0;
+                        AIaction = 1;
+                    } else if (chessSum == 2) {
+                        nowMove.len = 2;
+                        myAI.makeMove(nowMove, playColor);
+                        chessSum = 0;
+                        playColor ^= 3;
+                        AIaction = 1;
                     }
 
                     myAdapter.notifyDataSetChanged();//更新数据,刷新
+
+                    //AI思考下棋
+                    if (AIaction == 1) {
+                        new Thread() {
+                            public void run() {
+                                nowMove = myAI.getNextMove();
+                                makeAImove(nowMove, playColor);
+                                Message msg=new Message();
+                                msg.what=1;
+                                updateBoardHandler.sendMessage(msg);
+                            }
+                        }.start();
+                    }
                 }
             }
         });
@@ -111,10 +151,19 @@ public class GameView extends AppCompatActivity {
                 arr_board[i][j] = KONGNUM;
             }
         }
-//        arr_board[3][4] = BLACKNUM;
-//        arr_board[1][2] = WHITENUM;
     }
 
+    void updateDataSet()
+    {
+        myAdapter.notifyDataSetChanged();
+        if (checkWin(playColor^3, nowMove.x[0], nowMove.y[0]) || checkWin(playColor^3, nowMove.x[1], nowMove.y[1])) {
+            if (playColor == BLACKNUM) {
+                Toast.makeText(GameView.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(GameView.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     //自定义适配器
     class MyAdapter extends BaseAdapter {
@@ -176,7 +225,7 @@ public class GameView extends AppCompatActivity {
                 nexty+=dir[i][1];
             }
             nextx=posx-dir[i][0];
-            nexty=posy-dir[i][0];
+            nexty=posy-dir[i][1];
             while(inBoard(nextx,nexty) && arr_board[nextx][nexty]==color)
             {
                 connectSum++;
@@ -185,6 +234,7 @@ public class GameView extends AppCompatActivity {
             }
             if(connectSum>=6)
             {
+                isGameover=true;
                 return true;
             }
         }
@@ -202,5 +252,30 @@ public class GameView extends AppCompatActivity {
         {
             return false;
         }
+    }
+
+    //初始化AI
+    private void initAI(int color)
+    {
+        //初始化AI设置
+        AIcolor=color;
+        myAI.setMyColor(color);
+        if(color==BLACKNUM)
+        {
+            nowMove=myAI.getNextMove();
+            makeAImove(nowMove, color);
+            myAdapter.notifyDataSetChanged();
+        }
+    }
+
+    //执行AI招法
+    private void makeAImove(move AImove,int color)
+    {
+        for(int i=0;i<AImove.len;i++)
+        {
+            arr_board[AImove.x[i]][AImove.y[i]]=color;
+        }
+        playColor^=3;
+        AIaction=0;
     }
 }
