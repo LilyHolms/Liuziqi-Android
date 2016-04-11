@@ -1,4 +1,4 @@
-package com.softwareprojectmanagement.liuziqi.lily.liuchuqiji;
+package com.softwareprojectmanagement.liuziqi.lily.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
+import core.Config;
 
 /**
  * Created by Lily on 16/3/14.
@@ -19,14 +20,14 @@ import android.widget.Toast;
  * 目前棋盘为15*15,更改棋盘大小只需修改BOARDSIZE值
  */
 public class GameView extends AppCompatActivity {
-    private int KONGNUM = 0;//没有棋子
-    private int BLACKNUM = 1;//黑棋子
-    private int WHITENUM = 2;//白棋子
-    private int BOARDSIZE = 15;//棋盘大小
+    private int KONGNUM = Config.KONGNUM;
+    private int BLACKNUM = Config.BLACKNUM;
+    private int WHITENUM = Config.WHITENUM;
+    private int BOARDSIZE = Config.BOARDSIZE;
     private int screen_width;//屏幕宽度
 
     private int countClick=0;
-    int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];
+    private int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];
 
     private GridView gv_gameView;
     private MyAdapter myAdapter;
