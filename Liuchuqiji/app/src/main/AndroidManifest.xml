@@ -46,7 +46,7 @@
         </activity>
         <activity android:name=".SearchUserActivity" >
         </activity>
-        
+
         <activity android:name=".GameView2" >
         </activity>
         <activity android:name=".NetChatActivity" >

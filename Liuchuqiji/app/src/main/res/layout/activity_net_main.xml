@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RadioGroup
+        android:id="@+id/rgroup_net_tab"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rbtn_net_tab0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:tag="0"
+            android:background="@color/colorAccent"
+            android:text="@string/net_fight" />
+
+        <RadioButton
+            android:id="@+id/rbtn_net_tab1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:tag="1"
+            android:background="@color/colorAccent"
+            android:text="@string/net_chat"/>
+
+    </RadioGroup>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager_net_main"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

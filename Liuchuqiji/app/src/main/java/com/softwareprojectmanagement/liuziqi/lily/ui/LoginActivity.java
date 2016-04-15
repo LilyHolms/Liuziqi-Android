@@ -21,7 +21,7 @@ public class LoginActivity extends BaseActivity {
     private EditText et_username;
     private EditText et_password;
     private Button btn_login;
-    private TextView tv_register;
+//    private TextView tv_register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class LoginActivity extends BaseActivity {
         et_username = (EditText)findViewById(R.id.et_username);
         et_password = (EditText)findViewById(R.id.et_password);
         btn_login = (Button)findViewById(R.id.btn_login);
-        tv_register = (TextView)findViewById(R.id.tv_register);
+//        tv_register = (TextView)findViewById(R.id.tv_register);
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,12 +43,12 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        tv_register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRegisterClick(v);
-            }
-        });
+//        tv_register.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onRegisterClick(v);
+//            }
+//        });
     }
 
     public void onLoginClick(View view){
@@ -68,11 +68,11 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    public void onRegisterClick(View view){
-        Toast.makeText(LoginActivity.this, "跳转到RegisterActivity", Toast.LENGTH_SHORT).show();
-
-//        startActivity(RegisterActivity.class, null, false);
-    }
+//    public void onRegisterClick(View view){
+//        Toast.makeText(LoginActivity.this, "跳转到RegisterActivity", Toast.LENGTH_SHORT).show();
+//
+////        startActivity(RegisterActivity.class, null, false);
+//    }
 
 //    @Subscribe
 //    public void onEventMainThread(FinishEvent event){

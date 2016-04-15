@@ -42,6 +42,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private String currentUid="";
     BmobIMConversation c;
 
+    public BmobIMConversation getC(){
+        return c;
+    }
+
     public ChatAdapter(Context context,BmobIMConversation c) {
         try {
             currentUid = BmobUser.getCurrentUser(context).getObjectId();
@@ -142,7 +146,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 //        }
 
         else if(viewType == TYPE_RECEIVE_INVITE){
-            return new ReceiveInviteToFightHolder(parent.getContext(),parent,onRecyclerViewListener);
+            return new ReceiveInviteToFightHolder(parent.getContext(),parent,c,onRecyclerViewListener);
         }
         else if(viewType == TYPE_SEND_INVITE){
             return new SendInviteToFightHolder(parent.getContext(), parent,c,onRecyclerViewListener);

@@ -30,6 +30,8 @@ import cn.bmob.newim.notification.BmobNotificationManager;
 import cn.bmob.v3.exception.BmobException;
 import core.Config;
 import entity.NetFightMessage;
+import entity.User;
+import model.UserModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +59,8 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     Button btn_withdraw_chess;
     @Bind(R.id.extra_message)
     TextView extra_message;
+    @Bind(R.id.my_name)
+    TextView my_name;
     @Bind(R.id.opponent_name)
     TextView opponent_name;
     @Bind(R.id.gridview)
@@ -112,6 +116,12 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 }
             }
         });
+
+        //显示玩家本人username
+        User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
+        my_name.setText(user.getUsername());
+        //显示对方username
+        opponent_name.setText(c.getConversationTitle());
     }
 
     //悔棋按钮
