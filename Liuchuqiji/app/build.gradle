@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.softwareprojectmanagement.liuziqi.lily.liuchuqiji"
-        minSdkVersion 18
-        targetSdkVersion 19
+        minSdkVersion 19
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
