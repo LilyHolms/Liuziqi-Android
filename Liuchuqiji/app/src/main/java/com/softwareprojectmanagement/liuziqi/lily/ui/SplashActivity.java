@@ -22,9 +22,9 @@ public class SplashActivity extends BaseActivity {
             public void run() {
                 User user = UserModel.getInstance().getCurrentUser();
                 if (user == null) {
-                    startActivity(LoginActivity.class, null, true);
-                } else {
                     startActivity(MainActivity.class, null, true);
+                } else {
+                    startActivity(CatalogLoggedActivity.class, null, true);
                 }
             }
         }, 1000);
