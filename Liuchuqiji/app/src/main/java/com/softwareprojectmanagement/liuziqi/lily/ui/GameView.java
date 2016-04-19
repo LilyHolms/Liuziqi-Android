@@ -167,50 +167,6 @@ public class GameView extends AppCompatActivity {
         initAI(BLACKNUM);
     }
 
-
-    //自定义适配器
-    class MyAdapter extends BaseAdapter {
-        //上下文对象
-        private Context context;
-
-        MyAdapter(Context context) {
-            this.context = context;
-        }
-
-        public int getCount() {
-            return BOARDSIZE*BOARDSIZE;
-        }
-
-        public Object getItem(int item) {
-            return item;
-        }
-
-        public long getItemId(int id) {
-            return id;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
-            if (convertView == null) {
-                imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams( screen_width / BOARDSIZE, screen_width / BOARDSIZE));
-                //设置ImageView对象布局,即设置gridview每个item的宽高
-                imageView.setAdjustViewBounds(true);//设置边界对齐
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);//设置刻度的类型
-            } else {
-                imageView = (ImageView) convertView;
-            }
-
-            if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==BLACKNUM){
-                imageView.setImageResource(R.drawable.blackchess);
-            }else if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==WHITENUM){
-                imageView.setImageResource(R.drawable.whitechess);
-            }
-
-            return imageView;
-        }
-    }
-
     protected Handler updateBoardHandler=new Handler() {
         @Override
         public void handleMessage(Message msg) {

@@ -90,15 +90,6 @@ public class ReceiveInviteToFightHolder extends BaseViewHolder {
 
 
     }
-//    public void startActivity(Class<? extends Activity> target, Bundle bundle,boolean finish) {
-//        Intent intent = new Intent();
-//        intent.setClass(this, target);
-//        if (bundle != null)
-//            intent.putExtra(getPackageName(), bundle);
-//        startActivity(intent);
-//        if (finish)
-//            finish();
-//    }
 
     @OnClick(R.id.btn_reject_fight)
     public void onRejectFight(View view){
@@ -109,6 +100,7 @@ public class ReceiveInviteToFightHolder extends BaseViewHolder {
             public void done(BmobIMMessage msg, BmobException e) {
                 Logger.i("othermsg:" + msg.toString());
                 if (e == null) {//发送成功
+                    btn_agree_fight.setEnabled(false);
                     toast("拒绝对战发送成功");
                 } else {//发送失败
                     toast("拒绝对战发送失败:" + e.getMessage());
