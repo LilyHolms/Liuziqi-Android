@@ -5,14 +5,14 @@ import cn.bmob.newim.bean.BmobIMExtraMessage;
 /**
  * Created by Lily on 16/4/10.
  */
-public class InViteToFightRejectMessage extends BmobIMExtraMessage {
+public class InViteToFightWithdrawMessage extends BmobIMExtraMessage {
 
-    public InViteToFightRejectMessage(){
+    public InViteToFightWithdrawMessage(){
     }
 
     @Override
     public String getMsgType() {
-        return "inViteToFightReject";
+        return "inViteToFightWithdraw";
     }
 
     @Override

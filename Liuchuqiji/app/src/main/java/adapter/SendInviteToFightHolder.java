@@ -1,23 +1,30 @@
 package adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
+import com.softwareprojectmanagement.liuziqi.lily.ui.BaseActivity;
+import com.softwareprojectmanagement.liuziqi.lily.ui.NetChatActivity;
 import com.softwareprojectmanagement.liuziqi.lily.ui.R;
 
 import java.text.SimpleDateFormat;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMMessage;
 import cn.bmob.newim.bean.BmobIMSendStatus;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.v3.exception.BmobException;
+import entity.InViteToFightWithdrawMessage;
 
 /**
  * Created by Lily on 16/4/10.
@@ -40,6 +47,9 @@ public class SendInviteToFightHolder extends BaseViewHolder implements View.OnCl
 
     @Bind(R.id.progress_load)
     protected ProgressBar progress_load;
+
+    @Bind(R.id.btn_withdraw_invite)
+    protected Button btn_withdraw_invite;
 
     BmobIMConversation c;
 
@@ -127,9 +137,40 @@ public class SendInviteToFightHolder extends BaseViewHolder implements View.OnCl
                 });
             }
         });
+
+
+        btn_withdraw_invite.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                c.deleteMessage(message);//message是要被撤回的消息,msg是通知对方撤回该消息的消息
+
+                InViteToFightWithdrawMessage msg = new InViteToFightWithdrawMessage();
+                msg.setContent("withdrawFight");
+                c.sendMessage(msg, new MessageSendListener() {
+                    @Override
+                    public void done(BmobIMMessage msg, BmobException e) {
+                        Logger.i("othermsg:" + msg.toString());
+                        if (e == null) {//发送成功
+                            toast("撤回对战发送成功");
+                        } else {//发送失败
+                            toast("撤回对战发送失败:" + e.getMessage());
+                        }
+                    }
+                });
+
+                //TODO:这里没有想到很好的方式向activity发消息,更新isWaiting值.所以暂时写成刷新界面
+                //被迫使用了这种极其不优雅的方式,跳转界面的第三个参数暂时设置成false,点击返回按钮会变成没有撤回的样子=-=
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("c", c);
+                BaseActivity currentActivity = (BaseActivity) view.getContext();
+                currentActivity.startActivity(NetChatActivity.class, bundle, false);
+            }
+        });
     }
 
     public void showTime(boolean isShow) {
         tv_time.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
+
 }

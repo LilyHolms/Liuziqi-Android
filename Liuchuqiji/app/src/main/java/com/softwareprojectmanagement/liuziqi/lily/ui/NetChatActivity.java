@@ -1,35 +1,23 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
 
-
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bmob.utils.BmobLog;
 import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -41,12 +29,8 @@ import java.util.Map;
 import adapter.ChatAdapter;
 import adapter.OnRecyclerViewListener;
 import butterknife.Bind;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import cn.bmob.newim.bean.BmobIMAudioMessage;
 import cn.bmob.newim.bean.BmobIMConversation;
-import cn.bmob.newim.bean.BmobIMImageMessage;
-import cn.bmob.newim.bean.BmobIMLocationMessage;
 import cn.bmob.newim.bean.BmobIMMessage;
 import cn.bmob.newim.bean.BmobIMTextMessage;
 import cn.bmob.newim.core.BmobIMClient;
@@ -85,12 +69,11 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
 
     @Bind(R.id.btn_invitetoFight)
     Button btn_invitetoFight;
-    boolean isWaiting;//标记是否已发送对战邀请,并正在等待回复,0没有等待,1正在等待
-    // TODO:isWaiting还有很多地方要修改
-
+    boolean isWaiting = false;//标记是否已发送对战邀请,并正在等待回复,0没有等待,1正在等待
+    // TODO:isWaiting还有一些地方要修改:对战过程中结束后
+    static BmobIMMessage receiveInviteMsg = null;//收到的邀请消息,为了跳转Activity此值不变,设置成了静态
 
     Toast toast;
-    BmobRecordManager recordManager;
 
     ChatAdapter adapter;
     protected LinearLayoutManager layoutManager;
@@ -126,12 +109,8 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         }else {
             toast("您已发送对战邀请!");
         }
-
-
     }
-//TODO
-//            c.deleteMessage(adapter.getItem(adapter.getItemCount() - 1));这样只会删除本地消息
-//            adapter.remove(adapter.getItemCount() - 1);
+
 
     private void initSwipeLayout(){
         sw_refresh.setEnabled(true);
@@ -297,6 +276,8 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 if (e == null) {//发送成功
                     btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     isWaiting=true;//1表示正在等待
+                    adapter.addMessage(msg);//将消息显示到本地列表
+                    scrollToBottom();
                     toast("发送成功");
                 } else {//发送失败
                     toast("发送失败:" + e.getMessage());
@@ -349,6 +330,9 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 adapter.addMessage(msg);
                 //更新该会话下面的已读状态
                 c.updateReceiveStatus(msg);
+                if(msg.getContent().equals("一封战书")){
+                    receiveInviteMsg = msg;
+                }
             }
             scrollToBottom();
         }else if(c!=null && event!=null && c.getConversationId().equals(event.getConversation().getConversationId()) //如果是当前会话的消息
@@ -364,15 +348,25 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 isWaiting=false;
                 toast("对方拒绝邀请!");
+            }else if(content.equals("withdrawFight")){//对方撤回邀请
+                c.deleteMessage(receiveInviteMsg);
+                adapter.remove(adapter.findPosition(receiveInviteMsg));
+                adapter.notifyDataSetChanged();
             }
         }else{
             Logger.i("不是与当前聊天对象的消息");
         }
     }
 
+    //当点击返回键时,先判断是否处于发送对战邀请等待对方回复的状态,如果是,不允许该离开界面
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return super.onKeyDown(keyCode, event);
+        if(keyCode == KeyEvent.KEYCODE_BACK && isWaiting){
+            toast("请先撤回对战邀请再离开页面!");
+            return false;
+        }else{
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
     @Override
@@ -410,8 +404,6 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
 
     @Override
     protected void onDestroy() {
-        //清理资源
-        recordManager.clear();
         //更新此会话的所有消息为已读状态
         hideSoftInputView();
         c.updateLocalCache();
