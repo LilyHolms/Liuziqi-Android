@@ -30,6 +30,8 @@ import cn.bmob.newim.notification.BmobNotificationManager;
 import cn.bmob.v3.exception.BmobException;
 import core.Config;
 import entity.NetFightMessage;
+import entity.User;
+import model.UserModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +59,8 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     Button btn_withdraw_chess;
     @Bind(R.id.extra_message)
     TextView extra_message;
+    @Bind(R.id.my_name)
+    TextView my_name;
     @Bind(R.id.opponent_name)
     TextView opponent_name;
     @Bind(R.id.gridview)
@@ -112,6 +116,12 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 }
             }
         });
+
+        //显示玩家本人username
+        User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
+        my_name.setText(user.getUsername());
+        //显示对方username
+        opponent_name.setText(c.getConversationTitle());
     }
 
     //悔棋按钮
@@ -160,7 +170,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         });
     }
 
-    /**接收到聊天消息
+    /**接收下棋消息
      * @param event
      */
     @Subscribe
@@ -168,7 +178,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         addChessMessage2Board(event);
     }
 
-    /**添加消息到聊天界面中
+    /**添加下棋消息到界面中
      * @param event
      */
     private void addChessMessage2Board(MessageEvent event){
@@ -179,9 +189,9 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 ){//删掉并且不为暂态消息
             if(chessGridAdapter.findPosition(msg)<0){//如果未添加到界面中
 
-                String content = msg.getContent();//lily
+                String content = msg.getContent();//获得消息中的棋子坐标
                 int position = Integer.parseInt(content);
-                String temp_color = msg.getExtra();
+                String temp_color = msg.getExtra();//解析json获得棋子颜色
                 JSONObject jsonObject = null;
                 try {
                     jsonObject = new JSONObject(temp_color);

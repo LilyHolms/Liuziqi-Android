@@ -10,6 +10,7 @@ public class Config {
     //master key
     // public static final String DEFAULT_APPKEY="16e0fa3009af01300ba9420c09b70d07"
     public static final String DEFAULT_APPKEY="f26076f1abc0b72f42914f6999fd714b";
+   // public static final String DEFAULT_APPKEY="f26076f1abc0b72f42914f6999fd714b";
     public static final boolean DEBUG=true;
 
     public static final int KONGNUM = 0;//没有棋子

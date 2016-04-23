@@ -42,11 +42,10 @@
         </activity>
         <activity android:name=".LoginActivity" >
         </activity>
-        <activity android:name=".MainActivity" >
+        <activity android:name=".CatalogLoggedActivity" >
         </activity>
         <activity android:name=".SearchUserActivity" >
         </activity>
-        
         <activity android:name=".GameView2" >
         </activity>
         <activity android:name=".NetChatActivity" >
@@ -77,6 +76,20 @@
         <service android:name="cn.bmob.newim.core.service.HeartBeatService" />
         <!-- bmobim end -->
 
+        <activity android:name=".MainActivity" >
+        </activity>
+        <activity android:name=".RegisterActivity" >
+        </activity>
+        <activity android:name=".CatalogVisitorActivity" >
+        </activity>
+        <activity android:name=".RuleActivity" >
+        </activity>
+        <activity android:name=".PersonalInforActivity" >
+        </activity>
+        <activity android:name=".CatalogLocalFightActivity" >
+        </activity>
+        <activity android:name=".NetMatchingActivity" >
+        </activity>
     </application>
 
 </manifest>

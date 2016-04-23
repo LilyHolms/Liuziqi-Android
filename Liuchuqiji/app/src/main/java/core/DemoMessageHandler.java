@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
-import com.softwareprojectmanagement.liuziqi.lily.ui.MainActivity;
+import com.softwareprojectmanagement.liuziqi.lily.ui.CatalogLoggedActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bmob.newim.bean.BmobIMMessage;
-import cn.bmob.newim.bean.BmobIMMessageType;
 import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.event.OfflineMessageEvent;
 import cn.bmob.newim.listener.BmobIMMessageHandler;
@@ -57,7 +56,7 @@ public class DemoMessageHandler extends BmobIMMessageHandler{
                         Logger.i(msg.getMsgType() + "," + msg.getContent() + "," + msg.getExtra());
                         Toast.makeText(context, msg.getMsgType() + "," + msg.getContent(), Toast.LENGTH_SHORT).show();
 
-                        Intent pendingIntent = new Intent(context, MainActivity.class);
+                        Intent pendingIntent = new Intent(context, CatalogLoggedActivity.class);
                         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         //1、多个用户的多条消息合并成一条通知：有XX个联系人发来了XX条消息
                         BmobNotificationManager.getInstance(context).showNotification(event, pendingIntent);

@@ -58,6 +58,7 @@ import cn.bmob.newim.listener.ObseverListener;
 import cn.bmob.newim.listener.OnRecordChangeListener;
 import cn.bmob.newim.notification.BmobNotificationManager;
 import cn.bmob.v3.exception.BmobException;
+import entity.InViteToFightAgreeMessage;
 import entity.InviteToFightMessage;
 
 //对战邀请还没写完
@@ -84,6 +85,8 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
 
     @Bind(R.id.btn_invitetoFight)
     Button btn_invitetoFight;
+    boolean isWaiting;//标记是否已发送对战邀请,并正在等待回复,0没有等待,1正在等待
+    // TODO:isWaiting还有很多地方要修改
 
 
     Toast toast;
@@ -114,17 +117,21 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         startActivity(NetFightActivity.class, bundle, false);
     }
 
-//TODO
+
     //发送对战邀请
     @OnClick(R.id.btn_invitetoFight)
     public void onInvitetoFightClick(View view){
-        sendInvite2FightMessage();
+        if(!isWaiting){
+            sendInvite2FightMessage();
+        }else {
+            toast("您已发送对战邀请!");
+        }
 
+
+    }
+//TODO
 //            c.deleteMessage(adapter.getItem(adapter.getItemCount() - 1));这样只会删除本地消息
 //            adapter.remove(adapter.getItemCount() - 1);
-    }
-
-
 
     private void initSwipeLayout(){
         sw_refresh.setEnabled(true);
@@ -288,6 +295,8 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             public void done(BmobIMMessage msg, BmobException e) {
                 Logger.i("othermsg:" + msg.toString());
                 if (e == null) {//发送成功
+                    btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    isWaiting=true;//1表示正在等待
                     toast("发送成功");
                 } else {//发送失败
                     toast("发送失败:" + e.getMessage());
@@ -342,6 +351,20 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 c.updateReceiveStatus(msg);
             }
             scrollToBottom();
+        }else if(c!=null && event!=null && c.getConversationId().equals(event.getConversation().getConversationId()) //如果是当前会话的消息
+                && msg.isTransient()){//如果是暂态消息
+            String content = msg.getContent();
+
+            if( content.equals("agreeFight") ){//对方同意对战
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("c", c);
+                startActivity(NetFightActivity.class, bundle, false);
+                //TODO:加先后手标记
+            }else if(content.equals("rejectFight") ){//对方拒绝对战
+                btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                isWaiting=false;
+                toast("对方拒绝邀请!");
+            }
         }else{
             Logger.i("不是与当前聊天对象的消息");
         }
