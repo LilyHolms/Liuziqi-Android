@@ -11,4 +11,6 @@ public class move {
         x=new int[2];
         y=new int[2];
     }
+    public int val;
+    public int killVal;
 }

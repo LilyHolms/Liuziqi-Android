@@ -36,6 +36,8 @@ public class GameView2 extends AppCompatActivity {
     private int BLACKNUM = Config.BLACKNUM;
     private int WHITENUM = Config.WHITENUM;
     private int BOARDSIZE = Config.BOARDSIZE;
+    private int BLACKLAST=Config.BLACKLAST;
+    private int WHITELAST=Config.WHITELAST;
     private int screen_width;//屏幕宽度
     private int screen_height;//屏幕高度
 
@@ -57,7 +59,7 @@ public class GameView2 extends AppCompatActivity {
 
     //单步倒计时时间
     private int whiteStep,blackStep;
-    int stepTime=15;
+    int stepTime=30;
 
     //记录上一步双方招法用于悔棋
     private move lastBlack=new move();
@@ -119,20 +121,29 @@ public class GameView2 extends AppCompatActivity {
 
                     //根据当前玩家颜色来落对应的子
                     if (playColor == BLACKNUM) {
-                        arr_board[nowX][nowY] = BLACKNUM;
+                        arr_board[nowX][nowY] = BLACKLAST;
                         nowMoveX[chessSum - 1] = nowX;
                         nowMoveY[chessSum - 1] = nowY;
                         lastBlack.x[chessSum-1]=nowX;
                         lastBlack.y[chessSum-1]=nowY;
                         lastBlack.len=chessSum;
+                        if(chessSum==2)
+                        {
+                            arr_board[lastBlack.x[0]][lastBlack.y[0]]=BLACKLAST;
+                        }
                     } else if (playColor == WHITENUM) {
-                        arr_board[nowX][nowY] = WHITENUM;
+                        arr_board[nowX][nowY] = WHITELAST;
                         nowMoveX[chessSum - 1] = nowX;
                         nowMoveY[chessSum - 1] = nowY;
                         lastWhite.x[chessSum-1]=nowX;
                         lastWhite.y[chessSum-1]=nowY;
                         lastWhite.len=chessSum;
+                        if(chessSum==2)
+                        {
+                            arr_board[lastWhite.x[0]][lastWhite.y[0]]=WHITELAST;
+                        }
                     }
+
                     Toast.makeText(GameView2.this, "第" + steps + "手,落子位置:" + position, Toast.LENGTH_SHORT).show();
 
                     //变色
@@ -160,6 +171,10 @@ public class GameView2 extends AppCompatActivity {
                         } else {
                             Toast.makeText(GameView2.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                    else if(chechDraw())
+                    {
+                        drawGameRes(KONGNUM);
                     }
                 }
             }
@@ -235,8 +250,8 @@ public class GameView2 extends AppCompatActivity {
         blackTimer=(Chronometer)this.findViewById(R.id.blackTimer);
         whiteStepTimer=(Chronometer)this.findViewById(R.id.whiteStepTimer);
         blackStepTimer=(Chronometer)this.findViewById(R.id.blackStepTimer);
-        whiteStepTimer.setText("15s");
-        blackStepTimer.setText("15s");
+        whiteStepTimer.setText(stepTime+"s");
+        blackStepTimer.setText(stepTime+"s");
         //设置单步计时器的时间格式
         whiteStep=stepTime;
         blackStep=stepTime;
@@ -251,6 +266,7 @@ public class GameView2 extends AppCompatActivity {
                     changeTimer(playColor);
                     playColor=playColor^3;
                     whiteStep=stepTime;
+
                 }
                 chronometer.setText( "" + whiteStep+"s");
             }
@@ -275,7 +291,7 @@ public class GameView2 extends AppCompatActivity {
 
     private boolean checkWin(int posx,int posy)
     {
-        int color=arr_board[posx][posy];
+        int color=arr_board[posx][posy]%3;
         int connectSum;
         int nextx,nexty;
         for(int i=0;i<4;i++)
@@ -283,7 +299,7 @@ public class GameView2 extends AppCompatActivity {
             connectSum=1;
             nextx=posx+dir[i][0];
             nexty=posy+dir[i][1];
-            while(inBoard(nextx,nexty) && arr_board[nextx][nexty]==color)
+            while(inBoard(nextx,nexty) && arr_board[nextx][nexty]%3==color)
             {
                 connectSum++;
                 nextx+=dir[i][0];
@@ -291,7 +307,7 @@ public class GameView2 extends AppCompatActivity {
             }
             nextx=posx-dir[i][0];
             nexty=posy-dir[i][1];
-            while(inBoard(nextx,nexty) && arr_board[nextx][nexty]==color)
+            while(inBoard(nextx,nexty) && arr_board[nextx][nexty]%3==color)
             {
                 connectSum++;
                 nextx-=dir[i][0];
@@ -304,6 +320,23 @@ public class GameView2 extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    //检查是否平局
+    private boolean chechDraw()
+    {
+        for(int i=0;i<BOARDSIZE;i++)
+        {
+            for(int j=0;j<BOARDSIZE;j++)
+            {
+                if(arr_board[i][j]==KONGNUM)
+                {
+                    return false;
+                }
+            }
+        }
+        isGameover=true;
+        return true;
     }
 
     //检查未出界
@@ -326,7 +359,7 @@ public class GameView2 extends AppCompatActivity {
         {
             whiteTimer.stop();
             whiteStepTimer.stop();
-            whiteStepTimer.setText("15s");
+            whiteStepTimer.setText(stepTime+"s");
             String time[]= blackTimer.getText().toString().split(":");
             int temp=Integer.parseInt(time[0])*60;
             temp+=Integer.parseInt(time[1]);
@@ -340,7 +373,7 @@ public class GameView2 extends AppCompatActivity {
         {
             blackTimer.stop();
             blackStepTimer.stop();
-            blackStepTimer.setText("15s");
+            blackStepTimer.setText(stepTime+"s");
 
             String time[]= whiteTimer.getText().toString().split(":");
             int temp=Integer.parseInt(time[0])*60;
@@ -362,15 +395,31 @@ public class GameView2 extends AppCompatActivity {
             view_blackRes.setText("胜");
             view_blackRes.setTextColor(Color.rgb(255, 0, 0));
             view_steps.setText("游戏结束！黑方获胜！");
+            whiteStepTimer.stop();
+            whiteTimer.stop();
             isGameover=true;
         }
-        else
+        else if(winColor==WHITENUM)
         {
             view_blackRes.setText("负");
             view_blackRes.setTextColor(Color.rgb(0,0,255));
             view_whiteRes.setText("胜");
             view_whiteRes.setTextColor(Color.rgb(255,0,0));
             view_steps.setText("游戏结束！白方获胜！");
+            blackStepTimer.stop();
+            blackTimer.stop();
+            isGameover=true;
+        }
+        else if(winColor==KONGNUM)
+        {
+            view_blackRes.setText("平");
+            view_blackRes.setTextColor(Color.rgb(0,0,255));
+            view_whiteRes.setText("平");
+            view_whiteRes.setTextColor(Color.rgb(0, 0, 255));
+            whiteStepTimer.stop();
+            whiteTimer.stop();
+            blackStepTimer.stop();
+            blackTimer.stop();
             isGameover=true;
         }
     }

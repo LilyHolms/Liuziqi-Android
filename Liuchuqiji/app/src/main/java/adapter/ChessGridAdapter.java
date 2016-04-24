@@ -28,6 +28,9 @@ public class ChessGridAdapter extends BaseAdapter {
     private int screen_width;
     private int arr_board[][];
 
+    private int BLACKLAST=Config.BLACKLAST;
+    private int WHITELAST=Config.WHITELAST;
+
     public ChessGridAdapter() {
         //子类添加构造函数ChessGridNetAdapter(Context context,BmobIMConversation c)时,要求给父类添加无参构造函数
     }
@@ -73,6 +76,12 @@ public class ChessGridAdapter extends BaseAdapter {
             imageView.setImageResource(R.drawable.whitechess);
         }else if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==KONGNUM){
             imageView.setImageResource(R.color.transparent);//shiyishi
+        }else if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==WHITELAST){
+            imageView.setImageResource(R.drawable.whitechess_sel);
+            arr_board[position/BOARDSIZE][position%BOARDSIZE]=WHITENUM;
+        }else if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==BLACKLAST){
+            imageView.setImageResource(R.drawable.blackchess_sel);
+            arr_board[position/BOARDSIZE][position%BOARDSIZE]=BLACKNUM;
         }
 
         return imageView;

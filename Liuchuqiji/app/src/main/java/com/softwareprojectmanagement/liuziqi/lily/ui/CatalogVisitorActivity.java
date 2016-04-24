@@ -37,7 +37,7 @@ public class CatalogVisitorActivity extends BaseActivity {
 
     @OnClick(R.id.btn_to_ManComputer)
     public void onToManComputerClick(View view){
-        startActivity(GameView.class, null, false);
+        startActivity(PVESettingActivity.class, null, false);
     }
 
     @OnClick(R.id.btn_to_ManMan)

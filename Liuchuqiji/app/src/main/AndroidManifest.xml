@@ -90,6 +90,8 @@
         </activity>
         <activity android:name=".NetMatchingActivity" >
         </activity>
+        <activity android:name=".PVESettingActivity">
+        </activity>
     </application>
 
 </manifest>
