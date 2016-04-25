@@ -30,8 +30,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 //    //语音
 //    private final int TYPE_SEND_VOICE =6;
 //    private final int TYPE_RECEIVER_VOICE = 7;
+    //对弈邀请
     private final int TYPE_SEND_INVITE = 8;
     private final int TYPE_RECEIVE_INVITE = 9;
+    //好友申请
+    private final int TYPE_SEND_ADD_FRIEND = 10;
+    private final int TYPE_RECEIVE_ADD_FRIEND = 11;
     /**
      * 显示时间间隔:10分钟
      */
@@ -151,6 +155,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         else if(viewType == TYPE_SEND_INVITE){
             return new SendInviteToFightHolder(parent.getContext(), parent,c,onRecyclerViewListener);
         }
+        else if (viewType == TYPE_SEND_ADD_FRIEND){
+            return new SendAddFriendHolder(parent.getContext(), parent,c,onRecyclerViewListener);
+        }
+        else if (viewType == TYPE_RECEIVE_ADD_FRIEND){
+            return new ReiceiveAddFriendHolder(parent.getContext(), parent,c,onRecyclerViewListener);
+        }
         else {//开发者自定义的其他类型，可自行处理
             return null;
         }
@@ -178,6 +188,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         else if (holder instanceof SendInviteToFightHolder){
             ((SendInviteToFightHolder)holder).showTime(shouldShowTime(position));
         }
+        else if (holder instanceof SendAddFriendHolder){
+            ((SendAddFriendHolder)holder).showTime(shouldShowTime(position));
+        }
+        else if (holder instanceof ReiceiveAddFriendHolder){
+            ((ReiceiveAddFriendHolder)holder).showTime(shouldShowTime(position));
+        }
 //        else if (holder instanceof SendImageHolder) {
 //            ((SendImageHolder)holder).showTime(shouldShowTime(position));
 //        }else if (holder instanceof SendLocationHolder) {
@@ -195,6 +211,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             return message.getFromId().equals(currentUid) ? TYPE_SEND_TXT: TYPE_RECEIVER_TXT;
         }else if(message.getMsgType().equals("inviteToFight")){
             return message.getFromId().equals(currentUid) ? TYPE_SEND_INVITE: TYPE_RECEIVE_INVITE;
+        }else if(message.getMsgType().equals("addFriend")){
+            return message.getFromId().equals(currentUid) ? TYPE_SEND_ADD_FRIEND:TYPE_RECEIVE_ADD_FRIEND;
         }
 
 //        if(message.getMsgType().equals(BmobIMMessageType.IMAGE.getType()) ){

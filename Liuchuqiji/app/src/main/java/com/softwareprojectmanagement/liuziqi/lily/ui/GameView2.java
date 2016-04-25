@@ -50,8 +50,6 @@ public class GameView2 extends AppCompatActivity {
     private int dir[][]={{1,0},{1,1},{0,1},{1,-1}};
     private int playColor=BLACKNUM;
     private boolean isGameover=false;
-    private int nowMoveX[]=new int[2];
-    private int nowMoveY[]=new int[2];
 
     //双方的总计时器和单步倒计时器
     private Chronometer whiteTimer,whiteStepTimer;
@@ -122,8 +120,6 @@ public class GameView2 extends AppCompatActivity {
                     //根据当前玩家颜色来落对应的子
                     if (playColor == BLACKNUM) {
                         arr_board[nowX][nowY] = BLACKLAST;
-                        nowMoveX[chessSum - 1] = nowX;
-                        nowMoveY[chessSum - 1] = nowY;
                         lastBlack.x[chessSum-1]=nowX;
                         lastBlack.y[chessSum-1]=nowY;
                         lastBlack.len=chessSum;
@@ -133,8 +129,6 @@ public class GameView2 extends AppCompatActivity {
                         }
                     } else if (playColor == WHITENUM) {
                         arr_board[nowX][nowY] = WHITELAST;
-                        nowMoveX[chessSum - 1] = nowX;
-                        nowMoveY[chessSum - 1] = nowY;
                         lastWhite.x[chessSum-1]=nowX;
                         lastWhite.y[chessSum-1]=nowY;
                         lastWhite.len=chessSum;

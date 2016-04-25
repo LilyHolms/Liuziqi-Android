@@ -1,5 +1,6 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,12 +42,16 @@ import cn.bmob.newim.listener.MessagesQueryListener;
 import cn.bmob.newim.listener.ObseverListener;
 import cn.bmob.newim.listener.OnRecordChangeListener;
 import cn.bmob.newim.notification.BmobNotificationManager;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import core.Config;
+import entity.AddFriendMessage;
+import entity.Friends;
 import entity.InViteToFightAgreeMessage;
 import entity.InviteToFightMessage;
+import model.UserModel;
 
-//对战邀请还没写完
-//暂时通过顶部对战按钮跳转到对战界面
 public class NetChatActivity extends BaseActivity implements ObseverListener{
 
     @Bind(R.id.ll_chat)
@@ -61,14 +66,15 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
     @Bind(R.id.edit_msg)
     EditText edit_msg;
 
-    @Bind(R.id.btn_toFight)
-    Button btn_toFight;
-
     @Bind(R.id.btn_chat_send)
     Button btn_chat_send;
 
     @Bind(R.id.btn_invitetoFight)
     Button btn_invitetoFight;
+
+    @Bind(R.id.btn_AddFriend)
+    Button btn_AddFriend;
+
     boolean isWaiting = false;//标记是否已发送对战邀请,并正在等待回复,0没有等待,1正在等待
     // TODO:isWaiting还有一些地方要修改:对战过程中结束后
     static BmobIMMessage receiveInviteMsg = null;//收到的邀请消息,为了跳转Activity此值不变,设置成了静态
@@ -90,16 +96,36 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         c= BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) getBundle().getSerializable("c"));
         initSwipeLayout();
         initBottomView();
+        isFriend();
     }
 
-    //界面顶部按钮,直接跳转到对战界面
-    @OnClick(R.id.btn_toFight)
-    public void ontoFightClick(View view){
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("c", c);
-        startActivity(NetFightActivity.class, bundle, false);
-    }
+    //判断是否是好友
+    private void isFriend(){
+        String friend_A = UserModel.getInstance().getCurrentUser().getUsername();
+        String friend_B = c.getConversationTitle();
+        BmobQuery<Friends> query = new BmobQuery<Friends>();
+        //查询playerName叫“比目”的数据
 
+        if( friend_A.compareTo(friend_B)<0 ){
+            query.addWhereEqualTo("id", friend_A);
+            query.addWhereEqualTo("id", friend_B);
+        }else{
+            query.addWhereEqualTo("id", friend_B);
+            query.addWhereEqualTo("id", friend_A);
+        }
+        query.findObjects(this, new FindListener<Friends>() {
+            @Override
+            public void onSuccess(List<Friends> object) {
+                //已是好友
+                btn_AddFriend.setText("已是好友");
+                btn_AddFriend.setEnabled(false);
+            }
+            @Override
+            public void onError(int code, String msg) {
+                //不是好友
+            }
+        });
+    }
 
     //发送对战邀请
     @OnClick(R.id.btn_invitetoFight)
@@ -111,6 +137,14 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         }
     }
 
+    @OnClick(R.id.btn_AddFriend)
+    public void onAddFriendClick(View view){
+        if(true){
+            sendAddFriendMessage();
+        }else{
+            toast("对方已经是您的好友!");
+        }
+    }
 
     private void initSwipeLayout(){
         sw_refresh.setEnabled(true);
@@ -286,6 +320,27 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         });
     }
 
+    /**
+     * 发送添加好友申请
+     */
+    private void sendAddFriendMessage(){
+        AddFriendMessage msg = new AddFriendMessage();
+        msg.setContent("好友申请");
+        c.sendMessage(msg, new MessageSendListener() {
+            @Override
+            public void done(BmobIMMessage msg, BmobException e) {
+                Logger.i("othermsg:" + msg.toString());
+                if (e == null) {//发送成功
+                    adapter.addMessage(msg);//将消息显示到本地列表
+                    scrollToBottom();
+                    toast("发送成功");
+                } else {//发送失败
+                    toast("发送失败:" + e.getMessage());
+                }
+            }
+        });
+    }
+
     /**首次加载，可设置msg为null，下拉刷新的时候，默认取消息表的第一个msg作为刷新的起始时间点，默认按照消息时间的降序排列
      * @param msg
      */
@@ -342,8 +397,13 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             if( content.equals("agreeFight") ){//对方同意对战
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("c", c);
-                startActivity(NetFightActivity.class, bundle, false);
-                //TODO:加先后手标记
+                //startActivity(NetFightActivity.class, bundle, false);
+                Intent intent=new Intent(this,NetFightActivity.class);
+                intent.putExtra("myColor", Config.BLACKNUM);
+                intent.putExtra("waitTime",30);
+                //把bundle也放在Intent中传过去
+                intent.putExtra("bundle",bundle);
+                startActivity(intent);
             }else if(content.equals("rejectFight") ){//对方拒绝对战
                 btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 isWaiting=false;
@@ -352,6 +412,14 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 c.deleteMessage(receiveInviteMsg);
                 adapter.remove(adapter.findPosition(receiveInviteMsg));
                 adapter.notifyDataSetChanged();
+            }else if(content.equals("agreeFriend")){
+                //ps已在发送方点击同意按钮时将好友信息插入数据库
+                toast("对方同意了您的好友申请");
+                //已是好友
+                btn_AddFriend.setText("已是好友");
+                btn_AddFriend.setEnabled(false);
+            }else if(content.equals("rejectFriend")){
+                toast("对方拒绝了您的好友申请");
             }
         }else{
             Logger.i("不是与当前聊天对象的消息");

@@ -1,15 +1,20 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.softwareprojectmanagement.liuziqi.jelly.move;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -51,12 +56,14 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     private int BLACKNUM = Config.BLACKNUM;
     private int WHITENUM = Config.WHITENUM;
     private int BOARDSIZE = Config.BOARDSIZE;
+    private int BLACKLAST=Config.BLACKLAST;
+    private int WHITELAST=Config.WHITELAST;
     private int screen_width;//屏幕宽度
     private int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];
     private int last_coodinate;//最后一颗棋子的坐标
 
-    @Bind(R.id.btn_withdraw_chess)
-    Button btn_withdraw_chess;
+//    @Bind(R.id.btn_withdraw_chess)
+//    Button btn_withdraw_chess;
     @Bind(R.id.extra_message)
     TextView extra_message;
     @Bind(R.id.my_name)
@@ -70,6 +77,37 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
     BmobIMConversation c;
 
+    private int chessSum=0;//下了第几个棋，每方走两个棋子
+    private int getSum=0;  //收到了几个棋子
+    private int dir[][]={{1,0},{1,1},{0,1},{1,-1}};
+    private int playColor=BLACKNUM;
+    private int myColor;
+    private boolean isGameover=false;
+
+    //双方的总计时器和单步倒计时器
+    private Chronometer whiteTimer,whiteStepTimer;
+    private Chronometer blackTimer,blackStepTimer;
+
+    //单步倒计时时间
+    private int whiteStep,blackStep;
+    int stepTime=30;
+
+    //记录上一步双方招法用于悔棋
+    private move lastBlack=new move();
+    private move lastWhite=new move();
+
+    private Button btn_return;
+    private Button btn_chat;
+    private Button btn_lose;
+
+    //记录当前第几手
+    private TextView view_steps;
+    int steps=1;
+
+    //显示双方ID
+    private TextView view_blackID;
+    private TextView view_whiteID;
+
     protected String title() {
         return c.getConversationTitle();
     }
@@ -78,8 +116,12 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_fight);
-        c= BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) getBundle().getSerializable("c"));
-
+        //c= BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) getBundle().getSerializable("c"));
+        Intent intent=this.getIntent();
+        Bundle mybundle=intent.getBundleExtra("bundle");
+        c=BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) mybundle.getSerializable("c"));
+        myColor=intent.getIntExtra("myColor", 1);
+        stepTime=intent.getIntExtra("waitTime",30);
         initView();
         myGame();
     }
@@ -101,40 +143,151 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         linearParams.width = linearParams.height;
         gv_gameView.setLayoutParams(linearParams);
 
+        view_steps=(TextView)this.findViewById(R.id.text_playturn);
+        view_blackID=(TextView)this.findViewById(R.id.blackRes);
+        view_whiteID=(TextView)this.findViewById(R.id.whiteRes);
+
         //注册监听事件
         gv_gameView.setOnItemClickListener(new AdapterView.OnItemClickListener() {//落子
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-                if (arr_board[position / BOARDSIZE][position % BOARDSIZE] == KONGNUM) {
+                if (isGameover || playColor != myColor)
+                    return;
+                int nowX, nowY;
+                nowX = position / BOARDSIZE;
+                nowY = position % BOARDSIZE;
+                if (arr_board[nowX][nowY] == KONGNUM) {
+                    chessSum++;
+
+                    //根据当前玩家颜色来落对应的子
+                    if (playColor == BLACKNUM) {
+                        arr_board[nowX][nowY] = BLACKLAST;
+                        lastBlack.x[chessSum - 1] = nowX;
+                        lastBlack.y[chessSum - 1] = nowY;
+                        lastBlack.len = chessSum;
+                        if (chessSum == 2) {
+                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = BLACKLAST;
+                        }
+                        sentNetFightMessage(position, BLACKLAST);
+                    } else if (playColor == WHITENUM) {
+                        arr_board[nowX][nowY] = WHITELAST;
+                        lastWhite.x[chessSum - 1] = nowX;
+                        lastWhite.y[chessSum - 1] = nowY;
+                        lastWhite.len = chessSum;
+                        if (chessSum == 2) {
+                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = WHITELAST;
+                        }
+                        sentNetFightMessage(position, WHITELAST);
+                    }
                     toast("落子位置:" + position);
-                    arr_board[position / BOARDSIZE][position % BOARDSIZE] = BLACKNUM;//这里暂时写成本方是黑子
-                    last_coodinate = position;
-                    btn_withdraw_chess.setClickable(true);
-                    btn_withdraw_chess.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+//                    arr_board[position / BOARDSIZE][position % BOARDSIZE] = BLACKNUM;//这里暂时写成本方是黑子
+//                    last_coodinate = position;
+//                    btn_withdraw_chess.setClickable(true);
+//                    btn_withdraw_chess.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                     chessGridAdapter.notifyDataSetChanged();//更新数据,刷新
-                    sentNetFightMessage(position, WHITENUM);//这里暂时写成对方是白子
+                    //sentNetFightMessage(position, WHITENUM);//这里暂时写成对方是白子
+
+                    //变色
+                    if (steps == 1 && playColor == BLACKNUM && chessSum == 1) {
+
+                        changeTimer(playColor);
+                        playColor ^= 3;
+                        chessSum = 0;
+                        steps++;
+                        view_steps.setText("第" + steps + "手");
+                    } else if (chessSum == 2) {
+                        chessSum = 0;
+                        changeTimer(playColor);
+                        playColor ^= 3;
+                        steps++;
+                        view_steps.setText("第" + steps + "手");
+                    }
+                    //判断胜负
+                    if (checkWin(nowX, nowY)) {
+                        //drawGameRes(playColor ^ 3);
+                        if (arr_board[nowX][nowY] == WHITENUM) {
+                            Toast.makeText(NetFightActivity.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(NetFightActivity.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (chechDraw()) {
+                        //drawGameRes(KONGNUM);
+                        Toast.makeText(NetFightActivity.this, "游戏结束！平局！", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
         //显示玩家本人username
         User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
-        my_name.setText(user.getUsername());
+        view_blackID.setText(user.getUsername());
         //显示对方username
-        opponent_name.setText(c.getConversationTitle());
+        view_whiteID.setText(c.getConversationTitle());
+
+        //绑定各个按钮事件，本地游戏隐藏聊按钮
+        btn_return=(Button)this.findViewById(R.id.btn_return);
+        btn_chat=(Button)this.findViewById(R.id.btn_chat);
+        btn_lose=(Button)this.findViewById(R.id.btn_lose);
+
+        //悔棋按钮事件
+        btn_return.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isGameover && lastBlack.len > 0 && lastWhite.len > 0 && steps > 2) {
+                    if (chessSum == 0) {
+//                        for (int i = 0; i < lastBlack.len; i++) {
+//                            arr_board[lastBlack.x[i]][lastBlack.y[i]] = KONGNUM;
+//                        }
+//                        for (int i = 0; i < lastWhite.len; i++) {
+//                            arr_board[lastWhite.x[i]][lastWhite.y[i]] = KONGNUM;
+//                        }
+//                        lastBlack.len = 0;
+//                        lastWhite.len = 0;
+//                        steps -= 2;
+//                        chessGridAdapter.notifyDataSetChanged();
+//                        view_steps.setText("第" + steps + "手");
+
+                    } else if (chessSum == 1) {
+                        if (playColor == WHITENUM) {
+                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = KONGNUM;
+                            sentNetFightMessage(lastWhite.x[0]*9+lastWhite.y[0],KONGNUM);
+                            lastWhite.len = 0;
+
+                        } else {
+                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = KONGNUM;
+                            sentNetFightMessage(lastBlack.x[0]*9+lastBlack.y[0],KONGNUM);
+                            lastBlack.len = 0;
+                        }
+
+                        chessGridAdapter.notifyDataSetChanged();
+                        chessSum = 0;
+                    }
+                }
+            }
+        });
+
+        //认输按钮事件
+        btn_lose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isGameover) {
+                    //drawGameRes(playColor ^ 3);
+                }
+            }
+        });
     }
 
-    //悔棋按钮
-    @OnClick(R.id.btn_withdraw_chess)
-    public void onWithdrawChessClick(View view){
-        //更新本地
-        arr_board[last_coodinate / BOARDSIZE][last_coodinate % BOARDSIZE] = KONGNUM;
-        chessGridAdapter.notifyDataSetChanged();
-        //更新对方
-        sentNetFightMessage(last_coodinate, KONGNUM);
-        btn_withdraw_chess.setClickable(false);
-        btn_withdraw_chess.setBackgroundColor(getResources().getColor(R.color.colorLightGray));
-    }
+//    //悔棋按钮
+//    @OnClick(R.id.btn_withdraw_chess)
+//    public void onWithdrawChessClick(View view){
+//        //更新本地
+//        arr_board[last_coodinate / BOARDSIZE][last_coodinate % BOARDSIZE] = KONGNUM;
+//        chessGridAdapter.notifyDataSetChanged();
+//        //更新对方
+//        sentNetFightMessage(last_coodinate, KONGNUM);
+//        btn_withdraw_chess.setClickable(false);
+//        btn_withdraw_chess.setBackgroundColor(getResources().getColor(R.color.colorLightGray));
+//    }
 
     void myGame(){
         for(int i = 0 ; i < BOARDSIZE ; i ++ ){
@@ -142,8 +295,49 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 arr_board[i][j] = KONGNUM;
             }
         }
-        arr_board[3][4] = BLACKNUM;
-        arr_board[1][2] = WHITENUM;
+//        arr_board[3][4] = BLACKNUM;
+//        arr_board[1][2] = WHITENUM;
+        whiteTimer=(Chronometer)this.findViewById(R.id.whiteTimer);
+        blackTimer=(Chronometer)this.findViewById(R.id.blackTimer);
+        whiteStepTimer=(Chronometer)this.findViewById(R.id.whiteStepTimer);
+        blackStepTimer=(Chronometer)this.findViewById(R.id.blackStepTimer);
+        whiteStepTimer.setText(stepTime+"s");
+        blackStepTimer.setText(stepTime+"s");
+        //设置单步计时器的时间格式
+        whiteStep=stepTime;
+        blackStep=stepTime;
+        whiteStepTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                if(whiteStep>0)
+                    whiteStep--;
+                else
+                {
+                    //倒计时到了直接交换颜色
+                    changeTimer(playColor);
+                    playColor=playColor^3;
+                    whiteStep=stepTime;
+
+                }
+                chronometer.setText( "" + whiteStep+"s");
+            }
+        });
+        blackStepTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                if (blackStep > 0)
+                    blackStep--;
+                else {
+                    changeTimer(playColor);
+                    playColor = playColor ^ 3;
+                    blackStep=stepTime;
+                }
+                chronometer.setText("" + blackStep+"s");
+            }
+        });
+        blackTimer.start();
+        blackStepTimer.start();
     }
 
     /**
@@ -201,10 +395,83 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     e.printStackTrace();
                 }
                 int temp_color_int = Integer.parseInt(temp_color);
-                arr_board[position / BOARDSIZE][position % BOARDSIZE] = temp_color_int;
-                chessGridAdapter.notifyDataSetChanged();
-                //更新该会话下面的已读状态
-                c.updateReceiveStatus(msg);
+                int nowX = position / BOARDSIZE;
+                int nowY = position % BOARDSIZE;
+                //处理悔棋
+                if(temp_color_int==KONGNUM)
+                {
+                    if(getSum==1)
+                    {
+                        if(playColor==WHITENUM)
+                        {
+                            arr_board[lastWhite.x[0]][lastWhite.y[0]]=KONGNUM;
+                            lastWhite.len=0;
+                        }
+                        else
+                        {
+                            arr_board[lastBlack.x[0]][lastBlack.y[0]]=KONGNUM;
+                            lastBlack.len=0;
+                        }
+                        getSum=0;
+                        chessGridAdapter.notifyDataSetChanged();
+                    }
+                }
+                else
+                {
+                    //处理收到的落子信息
+                    getSum++;
+
+                    //根据当前玩家颜色来落对应的子
+                    if (playColor == BLACKNUM) {
+                        arr_board[nowX][nowY] = BLACKLAST;
+                        lastBlack.x[getSum - 1] = nowX;
+                        lastBlack.y[getSum - 1] = nowY;
+                        lastBlack.len = getSum;
+                        if (getSum == 2) {
+                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = BLACKLAST;
+                        }
+                    } else if (playColor == WHITENUM) {
+                        arr_board[nowX][nowY] = WHITELAST;
+                        lastWhite.x[getSum - 1] = nowX;
+                        lastWhite.y[getSum - 1] = nowY;
+                        lastWhite.len = getSum;
+                        if (getSum == 2) {
+                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = WHITELAST;
+                        }
+                    }
+                    //arr_board[nowX][nowY] = temp_color_int;
+                    chessGridAdapter.notifyDataSetChanged();
+                    //更新该会话下面的已读状态
+                    c.updateReceiveStatus(msg);
+
+                    //变色
+                    if (steps == 1 && playColor == BLACKNUM && getSum == 1) {
+
+                        changeTimer(playColor);
+                        playColor ^= 3;
+                        getSum = 0;
+                        steps++;
+                        view_steps.setText("第" + steps + "手");
+                    } else if (getSum == 2) {
+                        getSum = 0;
+                        changeTimer(playColor);
+                        playColor ^= 3;
+                        steps++;
+                        view_steps.setText("第" + steps + "手");
+                    }
+                    //判断胜负
+                    if (checkWin(nowX, nowY)) {
+                        //drawGameRes(playColor ^ 3);
+                        if (arr_board[nowX][nowY] == WHITENUM) {
+                            Toast.makeText(NetFightActivity.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(NetFightActivity.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (chechDraw()) {
+                        //drawGameRes(KONGNUM);
+                        Toast.makeText(NetFightActivity.this, "游戏结束！平局！", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }else{
             Logger.i("不是与当前聊天对象的消息");
@@ -237,4 +504,100 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         }
     }
 
+    //检查未出界
+    private boolean inBoard(int x,int y)
+    {
+        if(x>=0 && x<BOARDSIZE && y>=0 && y<BOARDSIZE)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //交换计时
+    private void changeTimer(int color)
+    {
+        if(color==WHITENUM)
+        {
+            whiteTimer.stop();
+            whiteStepTimer.stop();
+            whiteStepTimer.setText(stepTime+"s");
+            String time[]= blackTimer.getText().toString().split(":");
+            int temp=Integer.parseInt(time[0])*60;
+            temp+=Integer.parseInt(time[1]);
+            blackTimer.setBase(SystemClock.elapsedRealtime() -temp*1000);
+            //交换计时并且重置倒计时器
+            blackStep=stepTime;
+            blackTimer.start();
+            blackStepTimer.start();
+        }
+        else
+        {
+            blackTimer.stop();
+            blackStepTimer.stop();
+            blackStepTimer.setText(stepTime+"s");
+
+            String time[]= whiteTimer.getText().toString().split(":");
+            int temp=Integer.parseInt(time[0])*60;
+            temp+=Integer.parseInt(time[1]);
+            whiteTimer.setBase(SystemClock.elapsedRealtime() - temp * 1000);
+            //交换计时并且重置倒计时器
+            whiteStep=stepTime;
+            whiteTimer.start();
+            whiteStepTimer.start();
+        }
+    }
+
+    private boolean checkWin(int posx,int posy)
+    {
+        int color=arr_board[posx][posy]%3;
+        int connectSum;
+        int nextx,nexty;
+        for(int i=0;i<4;i++)
+        {
+            connectSum=1;
+            nextx=posx+dir[i][0];
+            nexty=posy+dir[i][1];
+            while(inBoard(nextx,nexty) && arr_board[nextx][nexty]%3==color)
+            {
+                connectSum++;
+                nextx+=dir[i][0];
+                nexty+=dir[i][1];
+            }
+            nextx=posx-dir[i][0];
+            nexty=posy-dir[i][1];
+            while(inBoard(nextx,nexty) && arr_board[nextx][nexty]%3==color)
+            {
+                connectSum++;
+                nextx-=dir[i][0];
+                nexty-=dir[i][1];
+            }
+            if(connectSum>=6)
+            {
+                isGameover=true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //检查是否平局
+    private boolean chechDraw()
+    {
+        for(int i=0;i<BOARDSIZE;i++)
+        {
+            for(int j=0;j<BOARDSIZE;j++)
+            {
+                if(arr_board[i][j]==KONGNUM)
+                {
+                    return false;
+                }
+            }
+        }
+        isGameover=true;
+        return true;
+    }
 }
