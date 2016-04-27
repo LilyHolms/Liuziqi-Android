@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import cn.bmob.newim.BmobIM;
@@ -47,8 +48,8 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.catalog_logged_activity);
-
         bmobconnect();
+        //tv_my_username.setText(UserModel.getInstance().getNickname());
     }
 /*-------------------------连接服务器-------------------------------*/
     private void bmobconnect(){

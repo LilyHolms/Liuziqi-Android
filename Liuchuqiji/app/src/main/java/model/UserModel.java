@@ -7,9 +7,6 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-import entity.User;
-import model.i.QueryUserListener;
-import model.i.UpdateCacheListener;
 import cn.bmob.newim.BmobIM;
 import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMUserInfo;
@@ -20,6 +17,9 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
+import entity.User;
+import model.i.QueryUserListener;
+import model.i.UpdateCacheListener;
 
 
 /**
@@ -34,6 +34,20 @@ public class UserModel extends BaseModel {
     }
 
     private UserModel() {}
+
+    /**获取用户昵称
+     *
+     * @return
+     */
+//    public String getNickname()
+//    {
+//
+//        String nickname = getCurrentUser().getNickname();
+//        if(nickname=="")
+//            return "江流儿";
+//        else
+//            return  nickname;
+//    }
 
     /** 登录
      * @param username
@@ -104,12 +118,12 @@ public class UserModel extends BaseModel {
         user.signUp(getContext(), new SaveListener() {
             @Override
             public void onSuccess() {
-                listener.done(null,null);
+                listener.done(getCurrentUser(),null);
             }
 
             @Override
             public void onFailure(int i, String s) {
-                listener.done(null,new BmobException(i,s));
+                listener.done(user,new BmobException(i,s));
             }
         });
     }

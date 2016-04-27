@@ -4,42 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
-
+    android:gravity="center_horizontal"
+    android:weightSum="11"
+    android:background="@drawable/ic_register_bg">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:layout_gravity="center_horizontal"
+        android:gravity="right" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:gravity="center">
     <EditText
         android:id="@+id/et_register_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
+        android:background="@drawable/ic_register_btn_id"
         android:paddingLeft="90dp"
-        android:paddingStart="90dp"
-        android:hint="账号"/>
+        android:paddingStart="90dp"/>
     <EditText
         android:id="@+id/et_register_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
+        android:background="@drawable/ic_register_btn_password"
         android:paddingLeft="90dp"
         android:paddingStart="90dp"
-        android:inputType="textPassword"
-        android:hint="密码"/>
+        android:inputType="textPassword" />
     <EditText
         android:id="@+id/et_register_repassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
+        android:background="@drawable/ic_register_btn_repassword"
         android:paddingLeft="90dp"
         android:paddingStart="90dp"
-        android:inputType="textPassword"
-        android:hint="重复密码"/>
+        android:inputType="textPassword"/>
 
 
     <Button
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="注册"/>
+        android:background="@drawable/ic_register_btn_register" />
 
-
+    </LinearLayout>
 </LinearLayout>
 

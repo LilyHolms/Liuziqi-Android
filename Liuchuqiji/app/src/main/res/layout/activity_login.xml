@@ -6,41 +6,52 @@
     android:orientation="vertical"
     android:background="@drawable/ic_login_bg3"
     android:gravity="center_horizontal"
-    android:weightSum="10">
+    android:weightSum="11">
 
 
-    <EditText
-        android:id="@+id/et_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="320dp"
-        android:background="@drawable/ic_login_btn_id2"
-        android:paddingLeft="90dp"
-        android:paddingStart="90dp"
-        android:textColor="#ffdddddd" />
 <!--阴影
         android:shadowDx="0.0"
         android:shadowDy="1.0"
         android:shadowRadius="1.0"
--->
-    <EditText
-        android:id="@+id/et_password"
-        android:layout_width="300dp"
-        android:layout_height="81dp"
-        android:background="@drawable/ic_login_btn_password"
-        android:paddingLeft="90dp"
-        android:paddingStart="90dp"
-        android:inputType="textPassword"
-        android:textColor="#ffdddddd" />
+-->  <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:layout_gravity="center_horizontal"
+        android:gravity="right" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:gravity="center">
+        <EditText
+            android:id="@+id/et_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_login_btn_id2"
+            android:paddingLeft="90dp"
+            android:paddingStart="90dp"
+            android:textColor="#ffdddddd" />
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="300dp"
+            android:layout_height="81dp"
+            android:background="@drawable/ic_login_btn_password"
+            android:paddingLeft="90dp"
+            android:paddingStart="90dp"
+            android:inputType="textPassword"
+            android:textColor="#ffdddddd" />
 
 
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="98dp"
-        android:layout_height="85dp"
-        android:background="@drawable/ic_login_btn_login" />
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="98dp"
+            android:layout_height="85dp"
+            android:background="@drawable/ic_login_btn_login" />
 
-
+    </LinearLayout>
 </LinearLayout>
 
 
