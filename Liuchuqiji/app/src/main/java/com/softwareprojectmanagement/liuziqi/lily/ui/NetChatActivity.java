@@ -123,8 +123,9 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             query.addWhereEqualTo("id", friend_A);
             query.addWhereEqualTo("friendId", friend_B);
         }else{
-            query.addWhereEqualTo("friendId", friend_B);
-            query.addWhereEqualTo("id", friend_A);
+            query.addWhereEqualTo("id", friend_B);
+            query.addWhereEqualTo("friendId", friend_A);
+
         }
         query.findObjects(this, new FindListener<Friends>() {
             @Override
