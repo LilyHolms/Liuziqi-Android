@@ -2,6 +2,7 @@ package adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -9,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.softwareprojectmanagement.liuziqi.lily.ui.BaseActivity;
-import com.softwareprojectmanagement.liuziqi.lily.ui.NetFightActivity;
 import com.softwareprojectmanagement.liuziqi.lily.ui.R;
 
 import java.text.SimpleDateFormat;
@@ -65,64 +64,6 @@ public class ReiceiveAddFriendHolder extends BaseViewHolder {
 
     }
 
-    @OnClick(R.id.btn_agree_fight)
-    public void onAgreeFriendClick(View view) {//同意加好友
-        AddFriendReplyMessage msg = new AddFriendReplyMessage();
-        msg.setContent("agreeFriend");
-        c.sendMessage(msg, new MessageSendListener() {
-            @Override
-            public void done(BmobIMMessage msg, BmobException e) {
-                Logger.i("othermsg:" + msg.toString());
-                if (e == null) {//发送成功
-                    toast("发送成功");
-                    Friends friends = new Friends();
-
-                    //好友信息加入数据库,对两人username进行比较,较小的字符串摆前面
-                    String friend_A = UserModel.getInstance().getCurrentUser().getUsername();
-                    String friend_B = c.getConversationTitle();
-                    if( friend_A.compareTo(friend_B)<0 ){
-                        friends.setId(friend_A);
-                        friends.setFriendId(friend_B);
-                    }else{
-                        friends.setId(friend_B);
-                        friends.setFriendId(friend_A);
-                    }
-                    friends.save(getContext(), new SaveListener() {
-
-                        @Override
-                        public void onSuccess() {
-                            toast("添加数据成功");
-                        }
-
-                        @Override
-                        public void onFailure(int code, String arg0) {
-                            toast("添加数据失败");
-                        }
-                    });
-                } else {//发送失败
-                    toast("发送失败:" + e.getMessage());
-                }
-            }
-        });
-    }
-
-    @OnClick(R.id.btn_reject_fight)
-    public void onRejectFriend(View view) {//拒绝加好友
-        AddFriendReplyMessage msg = new AddFriendReplyMessage();
-        msg.setContent("rejectFriend");
-        c.sendMessage(msg, new MessageSendListener() {
-            @Override
-            public void done(BmobIMMessage msg, BmobException e) {
-                Logger.i("othermsg:" + msg.toString());
-                if (e == null) {//发送成功
-                    toast("发送成功");
-                } else {//发送失败
-                    toast("发送失败:" + e.getMessage());
-                }
-            }
-        });
-    }
-
     @Override
     public void bindData(Object o) {
         final BmobIMMessage message = (BmobIMMessage) o;
@@ -160,8 +101,80 @@ public class ReiceiveAddFriendHolder extends BaseViewHolder {
             }
         });
 
+        //拒绝添加好友
+        btn_reject_fight.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                AddFriendReplyMessage msg = new AddFriendReplyMessage();
+                msg.setContent("rejectFriend");
+                c.sendMessage(msg, new MessageSendListener() {
+                    @Override
+                    public void done(BmobIMMessage msg, BmobException e) {
+                        Logger.i("othermsg:" + msg.toString());
+                        if (e == null) {//发送成功
+                            messageIsReplied(message);
+                            toast("发送成功");
+                        } else {//发送失败
+                            toast("发送失败:" + e.getMessage());
+                        }
+                    }
+                });
+            }
+        });
+
+        //同意添加好友
+        btn_agree_fight.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                AddFriendReplyMessage msg = new AddFriendReplyMessage();
+                msg.setContent("agreeFriend");
+                c.sendMessage(msg, new MessageSendListener() {
+                    @Override
+                    public void done(BmobIMMessage msg, BmobException e) {
+                        Logger.i("othermsg:" + msg.toString());
+                        if (e == null) {//发送成功
+                            messageIsReplied(message);
+                            toast("发送成功");
+                            Friends friends = new Friends();
+
+                            //好友信息加入数据库,对两人username进行比较,较小的字符串摆前面
+                            String friend_A = UserModel.getInstance().getCurrentUser().getUsername();
+                            String friend_B = c.getConversationTitle();
+                            if (friend_A.compareTo(friend_B) < 0) {
+                                friends.setId(friend_A);
+                                friends.setFriendId(friend_B);
+                            } else {
+                                friends.setId(friend_B);
+                                friends.setFriendId(friend_A);
+                            }
+                            friends.save(getContext(), new SaveListener() {
+
+                                @Override
+                                public void onSuccess() {
+                                    toast("添加数据成功");
+                                }
+
+                                @Override
+                                public void onFailure(int code, String arg0) {
+                                    toast("添加数据失败");
+                                }
+                            });
+                        } else {//发送失败
+                            toast("发送失败:" + e.getMessage());
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
+    public void messageIsReplied(BmobIMMessage message){
+        c.deleteMessage(message);//message是要被撤回的消息,msg要发送给对方的消息
+        btn_agree_fight.setEnabled(false);
+        btn_reject_fight.setEnabled(false);
+    }
     public void showTime(boolean isShow) {
         tv_time.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }

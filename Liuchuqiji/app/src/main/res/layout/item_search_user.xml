@@ -38,7 +38,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="11dp"
             android:background="@color/colorAccent"
-            android:text="对战"
+            android:text="聊天"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
     </RelativeLayout>
