@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--4游客界面-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.softwareprojectmanagement.liuziqi.lily.ui.MainActivity">
+    <Button
+        android:id="@+id/btn_to_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登录"
+        />
+    <Button
+        android:id="@+id/btn_to_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册"
+        />
+    <Button
+        android:id="@+id/btn_to_ManComputer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="人机对弈"
+        />
+    <Button
+        android:id="@+id/btn_to_ManMan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="人人对弈"
+        />
+    <Button
+        android:id="@+id/btn_to_Rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="规则"
+        />
+</LinearLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--3-0用户界面-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/head"/>
+        <TextView
+            android:id="@+id/tv_my_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名"/>
+        <TextView
+            android:id="@+id/tv_my_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="等级"/>
+        <Button
+            android:id="@+id/btn_to_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="退出"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/btn_to_localFight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="本地对弈"/>
+        <Button
+            android:id="@+id/btn_to_NetFight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="联网对弈"/>
+        <Button
+            android:id="@+id/btn_to_Friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="好友聊天"/>
+        <Button
+            android:id="@+id/btn_to_PersonalInfor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改信息"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_to_Chatroom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="聊天大厅"/>
+
+    <Button
+        android:id="@+id/btn_to_Rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="规则"/>
+
+
+
+
+</LinearLayout>

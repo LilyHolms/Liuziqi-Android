@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--2注册-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <EditText
+        android:id="@+id/et_register_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:paddingLeft="90dp"
+        android:paddingStart="90dp"
+        android:hint="账号"/>
+    <EditText
+        android:id="@+id/et_register_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:paddingLeft="90dp"
+        android:paddingStart="90dp"
+        android:inputType="textPassword"
+        android:hint="密码"/>
+    <EditText
+        android:id="@+id/et_register_repassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:paddingLeft="90dp"
+        android:paddingStart="90dp"
+        android:inputType="textPassword"
+        android:hint="重复密码"/>
+
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册"/>
+
+
+</LinearLayout>
+

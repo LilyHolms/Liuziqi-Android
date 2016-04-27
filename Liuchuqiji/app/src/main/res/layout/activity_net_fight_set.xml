@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/net_fight_set_bg"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="160dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:gravity="start"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="20dp"
+            android:layout_height="match_parent">
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:src="@drawable/net_fight_set_play" />
+        <LinearLayout
+            android:layout_width="20dp"
+            android:layout_height="match_parent">
+        </LinearLayout>
+        <RadioGroup
+            android:id="@+id/rg_choosetype"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbtn_chooseblack"
+                android:layout_width="67dp"
+                android:layout_height="35dp"
+                android:background="@drawable/net_fight_set_choseblack"
+                android:drawableStart="@drawable/net_fight_set_choose_flag"
+
+                android:button="@null" />
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="match_parent">
+            </LinearLayout>
+            <RadioButton
+                android:id="@+id/rbtn_choosewhite"
+                android:layout_width="67dp"
+                android:layout_height="35dp"
+                android:drawableStart="@drawable/net_fight_set_choose_flag"
+
+                android:background="@drawable/net_fight_set_choosewhite"
+                android:button="@null" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:gravity="start"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="20dp"
+            android:layout_height="match_parent">
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/men_set_bac"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:src="@drawable/net_fight_set_thinktime" />
+        <LinearLayout
+            android:layout_width="20dp"
+            android:layout_height="match_parent">
+        </LinearLayout>
+        <RadioGroup
+            android:id="@+id/rg_choosetime"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rbtn_choosefifteen"
+                android:layout_width="67dp"
+                android:layout_height="35dp"
+                android:background="@drawable/net_fight_set_fifteensecond"
+                android:drawableStart="@drawable/net_fight_set_choose_flag"
+                android:button="@null" />
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="match_parent">
+            </LinearLayout>
+            <RadioButton
+                android:id="@+id/rbtn_choosethirty"
+                android:layout_width="67dp"
+                android:layout_height="35dp"
+                android:background="@drawable/net_fight_set_thirtysecond"
+                android:drawableStart="@drawable/net_fight_set_choose_flag"
+
+                android:button="@null" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"></LinearLayout>
+
+        <Button
+            android:id="@+id/btn_determine"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/net_fight_set_commit" />
+    </LinearLayout>
+</LinearLayout>
