@@ -2,7 +2,9 @@ package com.softwareprojectmanagement.liuziqi.lily.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.os.SystemClock;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -58,7 +60,9 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     private int BOARDSIZE = Config.BOARDSIZE;
     private int BLACKLAST=Config.BLACKLAST;
     private int WHITELAST=Config.WHITELAST;
-    private int screen_width;//屏幕宽度
+    private int SELECTPOS=Config.SELECTPOS;
+    private int screen_height;
+    int screen_width;//屏幕宽度
     private int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];
     private int last_coodinate;//最后一颗棋子的坐标
 
@@ -99,6 +103,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     private Button btn_return;
     private Button btn_chat;
     private Button btn_lose;
+    private Button btn_move;
 
     //记录当前第几手
     private TextView view_steps;
@@ -107,6 +112,13 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     //显示双方ID
     private TextView view_blackID;
     private TextView view_whiteID;
+
+    //是否有选择框存在
+    private boolean select=false;
+    private double selX,selY;   //当前鼠标位置
+    private int posX,posY;      //当前选中位置
+    private double itemSize;    //格子的宽高
+    private double downX,downY; //上次鼠标位置
 
     protected String title() {
         return c.getConversationTitle();
@@ -132,31 +144,204 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
         WindowManager wm = this.getWindowManager();
         screen_width = wm.getDefaultDisplay().getWidth();
+        screen_height=wm.getDefaultDisplay().getHeight();
 
-        //为GridView设置适配器
-        chessGridAdapter = new ChessGridNetAdapter(this,screen_width,arr_board);//lily
-        gv_gameView.setAdapter(chessGridAdapter);
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
         linearParams.height = (screen_width / BOARDSIZE) * BOARDSIZE;
         linearParams.width = linearParams.height;
+        itemSize=screen_height*525/1000 / BOARDSIZE;
+
         gv_gameView.setLayoutParams(linearParams);
+        //为GridView设置适配器
+        chessGridAdapter = new ChessGridNetAdapter(this, linearParams.width,arr_board);//lily
+        gv_gameView.setAdapter(chessGridAdapter);
 
         view_steps=(TextView)this.findViewById(R.id.text_playturn);
         view_blackID=(TextView)this.findViewById(R.id.blackRes);
         view_whiteID=(TextView)this.findViewById(R.id.whiteRes);
 
-        //注册监听事件
-        gv_gameView.setOnItemClickListener(new AdapterView.OnItemClickListener() {//落子
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//        //注册监听事件
+//        gv_gameView.setOnItemClickListener(new AdapterView.OnItemClickListener() {//落子
+//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//
+//                if (isGameover || playColor != myColor)
+//                    return;
+//                int nowX, nowY;
+//                nowX = position / BOARDSIZE;
+//                nowY = position % BOARDSIZE;
+//                if (arr_board[nowX][nowY] == KONGNUM) {
+//                    chessSum++;
+//
+//                    //根据当前玩家颜色来落对应的子
+//                    if (playColor == BLACKNUM) {
+//                        arr_board[nowX][nowY] = BLACKLAST;
+//                        lastBlack.x[chessSum - 1] = nowX;
+//                        lastBlack.y[chessSum - 1] = nowY;
+//                        lastBlack.len = chessSum;
+//                        if (chessSum == 2) {
+//                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = BLACKLAST;
+//                        }
+//                        sentNetFightMessage(position, BLACKLAST);
+//                    } else if (playColor == WHITENUM) {
+//                        arr_board[nowX][nowY] = WHITELAST;
+//                        lastWhite.x[chessSum - 1] = nowX;
+//                        lastWhite.y[chessSum - 1] = nowY;
+//                        lastWhite.len = chessSum;
+//                        if (chessSum == 2) {
+//                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = WHITELAST;
+//                        }
+//                        sentNetFightMessage(position, WHITELAST);
+//                    }
+//                    toast("落子位置:" + position);
+////                    arr_board[position / BOARDSIZE][position % BOARDSIZE] = BLACKNUM;//这里暂时写成本方是黑子
+////                    last_coodinate = position;
+////                    btn_withdraw_chess.setClickable(true);
+////                    btn_withdraw_chess.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+//                    chessGridAdapter.notifyDataSetChanged();//更新数据,刷新
+//                    //sentNetFightMessage(position, WHITENUM);//这里暂时写成对方是白子
+//
+//                    //变色
+//                    if (steps == 1 && playColor == BLACKNUM && chessSum == 1) {
+//
+//                        changeTimer(playColor);
+//                        playColor ^= 3;
+//                        chessSum = 0;
+//                        steps++;
+//                        view_steps.setText("第" + steps + "手");
+//                    } else if (chessSum == 2) {
+//                        chessSum = 0;
+//                        changeTimer(playColor);
+//                        playColor ^= 3;
+//                        steps++;
+//                        view_steps.setText("第" + steps + "手");
+//                    }
+//                    //判断胜负
+//                    if (checkWin(nowX, nowY)) {
+//                        //drawGameRes(playColor ^ 3);
+//                        if (arr_board[nowX][nowY] == WHITENUM) {
+//                            Toast.makeText(NetFightActivity.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(NetFightActivity.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else if (chechDraw()) {
+//                        //drawGameRes(KONGNUM);
+//                        Toast.makeText(NetFightActivity.this, "游戏结束！平局！", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            }
+//        });
 
+        //显示玩家本人username
+        User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
+        view_blackID.setText(user.getUsername());
+        //显示对方username
+        view_whiteID.setText(c.getConversationTitle());
+
+        //绑定各个按钮事件，本地游戏隐藏聊按钮
+        btn_return=(Button)this.findViewById(R.id.btn_return);
+        btn_chat=(Button)this.findViewById(R.id.btn_chat);
+        btn_lose=(Button)this.findViewById(R.id.btn_lose);
+
+        //悔棋按钮事件
+        btn_return.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isGameover && lastBlack.len > 0 && lastWhite.len > 0 && steps > 2) {
+                    if (chessSum == 1) {
+                        if (playColor == WHITENUM) {
+                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = KONGNUM;
+                            sentNetFightMessage(lastWhite.x[0]*9+lastWhite.y[0],KONGNUM);
+                            lastWhite.len = 0;
+
+                        } else {
+                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = KONGNUM;
+                            sentNetFightMessage(lastBlack.x[0]*9+lastBlack.y[0],KONGNUM);
+                            lastBlack.len = 0;
+                        }
+
+                        chessGridAdapter.notifyDataSetChanged();
+                        chessSum = 0;
+                    }
+                }
+            }
+        });
+
+        //认输按钮事件
+        btn_lose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isGameover) {
+                    //drawGameRes(playColor ^ 3);
+                }
+            }
+        });
+
+        //绑定选择框移动事件
+        gv_gameView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        downX = event.getY();
+                        downY = event.getX();
+                        if (select == false) {
+                            selX = downX;
+                            selY = downY;
+                            select = true;
+                            //显示选择框
+                            posX = (int) (selX / itemSize);
+                            posY = (int) (selY / itemSize);
+                            if (inBoard(posX, posY)) {
+                                arr_board[posX][posY] += SELECTPOS;
+                                chessGridAdapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            return false;
+                        }
+                    }
+                    case MotionEvent.ACTION_MOVE: {
+                        selX += (event.getY() - downX);
+                        selY += (event.getX() - downY);
+                        downX = event.getY();
+                        downY = event.getX();
+                        int nowPosX = (int) (selX / itemSize);
+                        int nowPosY = (int) (selY / itemSize);
+                        if (posX == nowPosX && posY == nowPosY) {
+                            return false;
+                        } else if (inBoard(nowPosX, nowPosY)) {
+                            arr_board[posX][posY] -= SELECTPOS;
+                            arr_board[nowPosX][nowPosY] += SELECTPOS;
+                            posX = nowPosX;
+                            posY = nowPosY;
+                            chessGridAdapter.notifyDataSetChanged();
+                        } else {
+                            //边界处理，越界归位
+                            selX = posX * itemSize;
+                            selY = posY * itemSize;
+                            downX = event.getY();
+                            downY = event.getX();
+                        }
+                    }
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+
+        btn_move=(Button)this.findViewById(R.id.btn_move);
+        btn_move.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (isGameover || playColor != myColor)
                     return;
                 int nowX, nowY;
-                nowX = position / BOARDSIZE;
-                nowY = position % BOARDSIZE;
-                if (arr_board[nowX][nowY] == KONGNUM) {
+                nowX = posX;
+                nowY = posY;
+                int position=nowX*BOARDSIZE+posY;
+                if (arr_board[nowX][nowY]%9 == KONGNUM) {
                     chessSum++;
 
                     //根据当前玩家颜色来落对应的子
@@ -165,8 +350,10 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         lastBlack.x[chessSum - 1] = nowX;
                         lastBlack.y[chessSum - 1] = nowY;
                         lastBlack.len = chessSum;
-                        if (chessSum == 2) {
-                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = BLACKLAST;
+                        if (chessSum == 1) {
+                            for (int i = 0; i < lastWhite.len; i++) {
+                                arr_board[lastWhite.x[i]][lastWhite.y[i]] = WHITENUM;
+                            }
                         }
                         sentNetFightMessage(position, BLACKLAST);
                     } else if (playColor == WHITENUM) {
@@ -174,8 +361,10 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         lastWhite.x[chessSum - 1] = nowX;
                         lastWhite.y[chessSum - 1] = nowY;
                         lastWhite.len = chessSum;
-                        if (chessSum == 2) {
-                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = WHITELAST;
+                        if (chessSum == 1) {
+                            for (int i = 0; i < lastBlack.len; i++) {
+                                arr_board[lastBlack.x[i]][lastBlack.y[i]] = BLACKNUM;
+                            }
                         }
                         sentNetFightMessage(position, WHITELAST);
                     }
@@ -214,64 +403,6 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         //drawGameRes(KONGNUM);
                         Toast.makeText(NetFightActivity.this, "游戏结束！平局！", Toast.LENGTH_SHORT).show();
                     }
-                }
-            }
-        });
-
-        //显示玩家本人username
-        User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
-        view_blackID.setText(user.getUsername());
-        //显示对方username
-        view_whiteID.setText(c.getConversationTitle());
-
-        //绑定各个按钮事件，本地游戏隐藏聊按钮
-        btn_return=(Button)this.findViewById(R.id.btn_return);
-        btn_chat=(Button)this.findViewById(R.id.btn_chat);
-        btn_lose=(Button)this.findViewById(R.id.btn_lose);
-
-        //悔棋按钮事件
-        btn_return.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isGameover && lastBlack.len > 0 && lastWhite.len > 0 && steps > 2) {
-                    if (chessSum == 0) {
-//                        for (int i = 0; i < lastBlack.len; i++) {
-//                            arr_board[lastBlack.x[i]][lastBlack.y[i]] = KONGNUM;
-//                        }
-//                        for (int i = 0; i < lastWhite.len; i++) {
-//                            arr_board[lastWhite.x[i]][lastWhite.y[i]] = KONGNUM;
-//                        }
-//                        lastBlack.len = 0;
-//                        lastWhite.len = 0;
-//                        steps -= 2;
-//                        chessGridAdapter.notifyDataSetChanged();
-//                        view_steps.setText("第" + steps + "手");
-
-                    } else if (chessSum == 1) {
-                        if (playColor == WHITENUM) {
-                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = KONGNUM;
-                            sentNetFightMessage(lastWhite.x[0]*9+lastWhite.y[0],KONGNUM);
-                            lastWhite.len = 0;
-
-                        } else {
-                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = KONGNUM;
-                            sentNetFightMessage(lastBlack.x[0]*9+lastBlack.y[0],KONGNUM);
-                            lastBlack.len = 0;
-                        }
-
-                        chessGridAdapter.notifyDataSetChanged();
-                        chessSum = 0;
-                    }
-                }
-            }
-        });
-
-        //认输按钮事件
-        btn_lose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isGameover) {
-                    //drawGameRes(playColor ^ 3);
                 }
             }
         });
@@ -427,16 +558,20 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         lastBlack.x[getSum - 1] = nowX;
                         lastBlack.y[getSum - 1] = nowY;
                         lastBlack.len = getSum;
-                        if (getSum == 2) {
-                            arr_board[lastBlack.x[0]][lastBlack.y[0]] = BLACKLAST;
+                        if (getSum == 1) {
+                            for (int i = 0; i < lastWhite.len; i++) {
+                                arr_board[lastWhite.x[i]][lastWhite.y[i]] = WHITENUM;
+                            }
                         }
                     } else if (playColor == WHITENUM) {
                         arr_board[nowX][nowY] = WHITELAST;
                         lastWhite.x[getSum - 1] = nowX;
                         lastWhite.y[getSum - 1] = nowY;
                         lastWhite.len = getSum;
-                        if (getSum == 2) {
-                            arr_board[lastWhite.x[0]][lastWhite.y[0]] = WHITELAST;
+                        if (getSum == 1) {
+                            for (int i = 0; i < lastBlack.len; i++) {
+                                arr_board[lastBlack.x[i]][lastBlack.y[i]] = BLACKNUM;
+                            }
                         }
                     }
                     //arr_board[nowX][nowY] = temp_color_int;

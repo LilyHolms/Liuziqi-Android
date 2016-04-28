@@ -19,5 +19,6 @@ public class Config {
     public static final int BOARDSIZE = 19;//棋盘大小
     public static final int BLACKLAST=4;//刚下的黑棋子
     public static final int WHITELAST=5;//刚下的白棋子
+    public static final int SELECTPOS=9;//选择框
 
 }

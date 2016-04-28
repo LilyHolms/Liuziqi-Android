@@ -232,6 +232,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_play_btn_lose"/>
+        <Button
+            android:id="@+id/btn_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_btn_chat"/>
     </LinearLayout>
 
 </LinearLayout>
