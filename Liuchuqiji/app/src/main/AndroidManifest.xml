@@ -96,6 +96,10 @@
         </activity>
         <activity android:name=".SetPasswordActivity" >
         </activity>
+        <activity android:name=".ChatRoomActivity" >
+        </activity>
+        <activity android:name=".NetFightSetActivity" >
+        </activity>
 
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

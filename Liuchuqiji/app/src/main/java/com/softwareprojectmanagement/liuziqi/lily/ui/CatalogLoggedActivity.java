@@ -90,7 +90,7 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
     @OnClick(R.id.btn_to_NetFight)
     public void onToNetFightClick(View v){
         //TODO:需求不太确定,暂时写成跳转到匹配模块
-        startActivity(NetMatchingActivity.class, null, false);
+        startActivity(NetFightSetActivity.class, null, false);
     }
 
 

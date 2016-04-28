@@ -22,4 +22,10 @@
         android:layout_height="wrap_content"
         android:text="人人对弈"
         />
+
+    <Button
+        android:id="@+id/btn_to_ChatRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="聊天大厅" />
 </LinearLayout>
