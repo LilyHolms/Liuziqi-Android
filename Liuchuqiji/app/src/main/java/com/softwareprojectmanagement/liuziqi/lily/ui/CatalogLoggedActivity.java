@@ -43,13 +43,15 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
 
     @Bind(R.id.btn_to_Rule)
     Button btn_to_Rule;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.catalog_logged_activity);
         bmobconnect();
-        //tv_my_username.setText(UserModel.getInstance().getNickname());
+        //获取用户名 加载头像
+        tv_my_username.setText(UserModel.getInstance().getNickname());
+        UserModel.getInstance().loadAvatar(this, iv_avatar);
+        tv_my_rank.setText("积分：" + UserModel.getInstance().getPoints());
     }
 /*-------------------------连接服务器-------------------------------*/
     private void bmobconnect(){

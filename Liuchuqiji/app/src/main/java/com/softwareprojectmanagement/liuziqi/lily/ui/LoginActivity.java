@@ -1,6 +1,7 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,9 +47,9 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void done(Object o, BmobException e) {
                 if (e == null) {
-                    User user =(User)o;
+                    User user = (User) o;
                     //更新当前用户资料
-                    BmobIM.getInstance().updateUserInfo(new BmobIMUserInfo(user.getObjectId(),user.getUsername(),user.getAvatar()));
+                    BmobIM.getInstance().updateUserInfo(new BmobIMUserInfo(user.getObjectId(), user.getUsername(), user.getAvatar()));
                     startActivity(CatalogLoggedActivity.class, null, true);
                 } else {
                     toast(e.getMessage() + "(" + e.getErrorCode() + ")");
@@ -56,7 +57,14 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
-
+    //重写返回按钮
+    public boolean onKeyDown(int keyCode,KeyEvent event){
+        if(keyCode==KeyEvent.KEYCODE_BACK&&event.getRepeatCount()==0){
+            startActivity(MainActivity.class,null,true);
+            return true;
+        }
+        return false;
+    }
 
 //    @Subscribe
 //    public void onEventMainThread(FinishEvent event){

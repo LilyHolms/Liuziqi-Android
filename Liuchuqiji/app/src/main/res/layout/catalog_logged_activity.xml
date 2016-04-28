@@ -17,11 +17,11 @@
         android:background="@drawable/ic_catalog_logged_background_head">
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="2"
             android:layout_gravity="center"
-            android:background="@mipmap/head"/>
+            android:src="@drawable/default_avatar"/>
         <TextView
             android:id="@+id/tv_my_username"
             android:layout_width="wrap_content"
