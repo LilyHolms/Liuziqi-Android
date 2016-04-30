@@ -340,7 +340,7 @@ public class NetFightSetActivity extends BaseActivity {
                 // TODO Auto-generated method stub
                 //toast("查询成功：");
                 user_fight.setUsername(object.getUsername());
-                user_fight.setAvatar(object.getAvatar());
+                //user_fight.setAvatar(object.getAvatar());
                 StartCov();
             }
 

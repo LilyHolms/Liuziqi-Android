@@ -99,7 +99,7 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
     @OnClick(R.id.btn_to_Friend)
     public void onToFriendClick(View v){
         //TODO:应当跳转到好友模块,需求不太确定,暂时写成跳转到搜索用户界面
-        startActivity(SearchUserActivity.class, null, false);
+        startActivity(FriendsActivity.class, null, false);
     }
 
     @OnClick(R.id.btn_to_PersonalInfor)

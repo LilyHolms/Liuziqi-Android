@@ -5,23 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:weightSum="22"
     android:background="@drawable/ic_catalog_logged_background">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="4"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
         android:background="@drawable/ic_personalinfo_background_avatar"
-        android:baselineAligned="false"
-        android:layout_weight="2">
+        android:baselineAligned="false">
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="wrap_content"
@@ -29,18 +21,12 @@
             android:layout_gravity="center"
             android:src="@drawable/default_avatar"/>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="4"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_weight="8">
+        android:gravity="center_horizontal">
         <Button
             android:id="@+id/btn_to_avatar"
             android:layout_width="wrap_content"
@@ -66,11 +52,5 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_personalinfo_btn_submit" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_weight="4"/>
 
 </LinearLayout>

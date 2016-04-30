@@ -4,23 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:gravity="center"
     android:orientation="vertical"
+    android:background="@drawable/local_fight_bg"
     tools:context="com.softwareprojectmanagement.liuziqi.lily.ui.CatalogLocalFightActivity">
     <Button
         android:id="@+id/btn_to_ManComputer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="人机对弈"
+        android:background="@drawable/ic_local_figght_pve"
         />
     <Button
         android:id="@+id/btn_to_ManMan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="人人对弈"
+        android:background="@drawable/ic_local_figght_pvp"
         />
 
     <Button
