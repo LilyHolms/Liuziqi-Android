@@ -14,6 +14,8 @@ public class CatalogLocalFightActivity extends BaseActivity {
     Button btn_to_ManComputer;
     @Bind(R.id.btn_to_ManMan)
     Button btn_to_ManMan;
+    @Bind(R.id.btn_to_ChatRoom)
+    Button btn_to_ChatRoom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,11 @@ public class CatalogLocalFightActivity extends BaseActivity {
     @OnClick(R.id.btn_to_ManMan)
     public void onToManManClick(View view){
         startActivity(GameView2.class, null, false);
+    }
+
+    @OnClick(R.id.btn_to_ChatRoom)
+    public void onToChatRoomClick(View view){
+        startActivity(ChatRoomActivity.class, null, false);
     }
 
 }

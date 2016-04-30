@@ -2,11 +2,12 @@ package entity;
 
 import cn.bmob.v3.BmobObject;
 //白旗在线表
+
 /**
  * Created by camellia on 16/4/26.
  */
 
-public class WhiteChessQueue  extends BmobObject {
+public class WhiteChessQueue extends BmobObject {
     private String name;
     private String UserObjectId;
     private int chooseTime;
@@ -14,11 +15,11 @@ public class WhiteChessQueue  extends BmobObject {
     private String UserObjectId2;
     //otherflag
     public WhiteChessQueue(){}
-    public WhiteChessQueue(String name, String UserObjectId,int chooseTime,String SysTime){
+    public WhiteChessQueue(String name, String UserObjectId, int chooseTime, String UserObjectId2){
         this.name = name;
         this.UserObjectId = UserObjectId;
         this.chooseTime = chooseTime;
-        this.SysTime = SysTime;
+        this.UserObjectId2 = UserObjectId2;
     }
 
     public String getName() {

@@ -1,5 +1,9 @@
 package com.softwareprojectmanagement.liuziqi.jelly;
 
+import android.os.SystemClock;
+
+import java.util.Arrays;
+
 /**
  * Created by 峻瑶 on 2016/4/13.
  */
@@ -15,12 +19,15 @@ public class Connect6AI {
     private int myColor;
     private int nowstep=0;
 
-    private int roadScore[]={0,20,80,150,800,1000,100000};
+    private int roadScore[]={0,20,80,150,800,1000,9000000};
     private int whiteRoadSum[]=new int[7];
     private int blackRoadSum[]=new int[7];
     private int val[]=new int[3];
 
     private int level;
+    private int searchDepth=2;
+
+    private int killVal[][][][]=new int[20][20][20][20];
 
     class pointStack{
         public int len;
@@ -49,7 +56,21 @@ public class Connect6AI {
 
     public void setLevel(int l)
     {
-        level=l;
+        if(l==1)
+        {
+            level=2;
+            searchDepth=1;
+        }
+        else if(l==2)
+        {
+            level=3;
+            searchDepth=1;
+        }
+        else if(l==3)
+        {
+            level=2;
+            searchDepth=2;
+        }
     }
 
     //执行招法
@@ -111,6 +132,11 @@ public class Connect6AI {
     private boolean selMove(int x,int y)
     {
         int dotx,doty;
+        int temp=level;
+        if(nowstep==1)
+        {
+            level=1;
+        }
         for(int i=-level;i<=level;i++)
         {
             for(int j=-level;j<=level;j++)
@@ -119,9 +145,17 @@ public class Connect6AI {
                 doty=y+j;
                 if(inBoard(dotx,doty) && map[dotx][doty]!=BLANK)
                 {
+                    if(level==1)
+                    {
+                        level=temp;
+                    }
                     return true;
                 }
             }
+        }
+        if(level==1)
+        {
+            level=temp;
         }
         return false;
     }
@@ -210,7 +244,39 @@ public class Connect6AI {
             val = Evaluate(color);
             return val;
         }
+        move bestMove=new move();
+        move temp;
+        int bestIndex=0,maxKill=-INF;
         createMove(depth, color);
+        //杀手评分寻找排序
+        for(int i=0;i<myStack[depth].len;i++)
+        {
+            myStack[depth].allMove[i].killVal = killVal[myStack[depth].allMove[i].x[0]][myStack[depth].allMove[i].y[0]][myStack[depth].allMove[i].x[1]][myStack[depth].allMove[i].y[1]];
+        }
+//        for(int i=0;i<myStack[depth].len;i++)
+//        {
+//            for(int j=i+1;j<myStack[depth].len;j++)
+//            {
+//                if(myStack[depth].allMove[i].killVal<myStack[depth].allMove[j].killVal)
+//                {
+//                    temp=myStack[depth].allMove[i];
+//                    myStack[depth].allMove[i]=myStack[depth].allMove[j];
+//                    myStack[depth].allMove[j]=temp;
+//                }
+//            }
+//        }
+        for(int i=0;i<myStack[depth].len;i++)
+        {
+            if(myStack[depth].allMove[i].killVal>maxKill)
+            {
+                maxKill=myStack[depth].allMove[i].killVal;
+                bestMove=myStack[depth].allMove[i];
+                bestIndex=i;
+            }
+        }
+        myStack[depth].allMove[bestIndex]=myStack[depth].allMove[0];
+        myStack[depth].allMove[0]=bestMove;
+
         for (int i = 0; i < myStack[depth].len; i++)
         {
             makeMove(myStack[depth].allMove[i], color);
@@ -218,13 +284,17 @@ public class Connect6AI {
             unMakeMove(myStack[depth].allMove[i]);
             if (val >= beta)
             {
+                bestMove=myStack[depth].allMove[i];
+                killVal[bestMove.x[0]][bestMove.y[0]][bestMove.x[1]][bestMove.y[1]]+=2;
                 return val;
             }
             if (val>alpha)
             {
+                bestMove=myStack[depth].allMove[i];
                 alpha = val;
             }
         }
+        killVal[bestMove.x[0]][bestMove.y[0]][bestMove.x[1]][bestMove.y[1]]+=2;
         return alpha;
     }
 
@@ -234,8 +304,45 @@ public class Connect6AI {
 //        int next=rand.nextInt(myStack.len);
 //        return myStack.allMove[next];
         int val;
+        long start= SystemClock.elapsedRealtime();
         move bestMove=new move();
+        int bestIndex=0;
         createMove(depth,myColor);
+        //先进行一层估值排序
+        move temp;
+        for(int i=0;i<myStack[depth].len;i++)
+        {
+            makeMove(myStack[depth].allMove[i],myColor);
+            val=-AlphaBeta(0,-INF,-alpha,myColor^3);
+            myStack[depth].allMove[i].val=val;
+            unMakeMove(myStack[depth].allMove[i]);
+            if(val>alpha)
+            {
+                alpha=val;
+                bestMove=myStack[depth].allMove[i];
+                bestIndex=i;
+            }
+        }
+        if(searchDepth==1)
+        {
+            return bestMove;
+        }
+        for(int i=0;i<myStack[depth].len;i++)
+        {
+            for(int j=i+1;j<myStack[depth].len;j++)
+            {
+                if(myStack[depth].allMove[i].val<myStack[depth].allMove[j].val)
+                {
+                    temp=myStack[depth].allMove[i];
+                    myStack[depth].allMove[i]=myStack[depth].allMove[j];
+                    myStack[depth].allMove[j]=temp;
+                }
+            }
+        }
+        myStack[depth].len=myStack[depth].len>50?50:myStack[depth].len;
+//        myStack[depth].allMove[bestIndex]=myStack[depth].allMove[0];
+//        myStack[depth].allMove[0]=bestMove;
+        alpha=-INF;
         for(int i=0;i<myStack[depth].len;i++)
         {
             makeMove(myStack[depth].allMove[i],myColor);
@@ -261,7 +368,7 @@ public class Connect6AI {
             makeMove(bestMove,myColor);
             return bestMove;
         }
-        bestMove=SearchBestMove(1,-INF);
+        bestMove=SearchBestMove(searchDepth,-INF);
         makeMove(bestMove,myColor);
         return bestMove;
     }

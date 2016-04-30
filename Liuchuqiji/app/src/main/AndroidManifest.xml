@@ -88,13 +88,24 @@
         </activity>
         <activity android:name=".CatalogLocalFightActivity" >
         </activity>
-        <activity android:name=".ChatRoomActivity" >
-        </activity>
         <activity android:name=".NetMatchingActivity" >
+        </activity>
+        <activity android:name=".PVESettingActivity">
+        </activity>
+        <activity android:name=".PVPSettingActivity">
+        </activity>
+        <activity android:name=".SetPasswordActivity" >
+        </activity>
+        <activity android:name=".ChatRoomActivity" >
         </activity>
         <activity android:name=".NetFightSetActivity" >
         </activity>
 
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

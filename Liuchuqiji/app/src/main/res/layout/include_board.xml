@@ -4,34 +4,239 @@
     android:layout_width= "match_parent"
     android:layout_height= "wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:weightSum="100"
+    android:background="@drawable/ic_play_background"
+    >
 
-    <GridView
-        android:id= "@+id/gridview"
-        android:layout_width= "fill_parent"
-        android:layout_height= "wrap_content"
-        android:gravity= "center"
-        android:numColumns= "6"
-        android:stretchMode="columnWidth"
-        android:background="@drawable/chessboard"
-        android:horizontalSpacing= "0dp">
-    </GridView>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7.5"
+        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/text_playturn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="第1手"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
 
-    <Chronometer
-        android:id ="@+id/whiteTimer"
+    <!--黑方用户信息和计时-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13.5"
+        android:weightSum="12"
+        android:gravity="right"
+        android:background="@drawable/ic_play_blackbg"
+        android:paddingRight="20sp"
+        >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center">
+            <!--本地胜负显示-->
+            <TextView
+                android:id="@+id/blackRes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:textColor="#FF0000"
+                android:gravity="center"/>
+        </LinearLayout>
+        <Chronometer
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/blackStepTimer"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:background="@drawable/ic_play_text_steptime"
+            android:gravity="center"
+            android:layout_gravity="center"
+            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+        <Chronometer
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:id="@+id/blackTimer"
+            android:textSize="15dp"
+            android:textColor="#000000"
+            android:background="@drawable/ic_play_blacktime"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:layout_gravity="center"
+            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/blackGrade"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:text="12级"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/blackPhoto"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_gameview_photo_black"/>
+    </LinearLayout>
+
+
+        <GridView
+            android:id= "@+id/gridview"
+            android:layout_width= "wrap_content"
+            android:layout_height= "0dp"
+            android:gravity= "center"
+            android:numColumns= "50"
+            android:stretchMode="columnWidth"
+            android:background="@drawable/chessboard"
+            android:horizontalSpacing= "0dp"
+            android:layout_weight="52.5">
+        </GridView>
+
+    <!--白方用户信息和计时-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13.5"
+        android:weightSum="12"
+        android:gravity="start"
+        android:background="@drawable/ic_play_whitebg"
+        android:paddingLeft="20sp"
+        >
+
+        <ImageView
+            android:id="@+id/whitePhoto"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_gameview_photo_white"
+            android:layout_gravity="center"
+            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/whiteGrade"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:text="18级"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+        <Chronometer
+            android:id ="@+id/whiteTimer"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#eb6100"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_play_whitetime"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+        <Chronometer
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/whiteStepTimer"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:background="@drawable/ic_play_text_steptime"
+            android:gravity="center"
+            android:format="%ss"
+            android:layout_gravity="center"
+            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" >
+            <!--本地胜负显示-->
+            <TextView
+                android:id="@+id/whiteRes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:textColor="#0000FF"
+                android:gravity="center"/>
+         </LinearLayout>
+    </LinearLayout>
+
+    <!--按钮集-->
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="80px"
-        android:textColor="#00FF00"
-        android:layout_gravity="center_horizontal" />
-
-    <Chronometer
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/blackTimer"
-        android:textSize="80px"
-        android:textColor="#000000"
-        android:layout_gravity="center_horizontal"
-        />
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="14"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btn_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_btn_return"/>
+        <Button
+            android:id="@+id/btn_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_btn_chat"/>
+        <Button
+            android:id="@+id/btn_lose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_btn_lose"/>
+        <Button
+            android:id="@+id/btn_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_btn_chat"/>
+    </LinearLayout>
 
 </LinearLayout>

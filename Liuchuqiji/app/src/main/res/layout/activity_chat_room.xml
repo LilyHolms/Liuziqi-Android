@@ -28,11 +28,12 @@
             android:text="发送"/>
     </LinearLayout>
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/ll_bottom"
-        android:id="@+id/lv_data"></ListView>
 
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lv_data"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom" />
 </RelativeLayout>

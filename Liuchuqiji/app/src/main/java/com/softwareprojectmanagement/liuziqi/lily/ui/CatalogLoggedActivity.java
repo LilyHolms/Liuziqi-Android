@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import cn.bmob.newim.BmobIM;
@@ -43,15 +44,12 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
     @Bind(R.id.btn_to_Rule)
     Button btn_to_Rule;
 
-    @Bind(R.id.btn_to_Chatroom)
-    Button btn_to_Chatroom;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.catalog_logged_activity);
-
         bmobconnect();
+        //tv_my_username.setText(UserModel.getInstance().getNickname());
     }
 /*-------------------------连接服务器-------------------------------*/
     private void bmobconnect(){
@@ -92,7 +90,6 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
     @OnClick(R.id.btn_to_NetFight)
     public void onToNetFightClick(View v){
         //TODO:需求不太确定,暂时写成跳转到匹配模块
-        //TODO:跳转到设置
         startActivity(NetFightSetActivity.class, null, false);
     }
 
@@ -106,11 +103,6 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
     @OnClick(R.id.btn_to_PersonalInfor)
     public void onToPersonalInformationClick(View v){
         startActivity(PersonalInforActivity.class, null, false);
-    }
-
-    @OnClick(R.id.btn_to_Chatroom)
-    public void onToChatRoomClick(View v){
-        startActivity(ChatRoomActivity.class, null, false);
     }
 
     @OnClick(R.id.btn_to_Rule)

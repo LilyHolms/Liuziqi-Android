@@ -1,5 +1,6 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +45,7 @@ import cn.bmob.newim.notification.BmobNotificationManager;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import core.Config;
 import entity.AddFriendMessage;
 import entity.Friends;
 import entity.InViteToFightAgreeMessage;
@@ -395,7 +397,13 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             if( content.equals("agreeFight") ){//对方同意对战
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("c", c);
-                startActivity(NetFightActivity.class, bundle, false);
+                //startActivity(NetFightActivity.class, bundle, false);
+                Intent intent=new Intent(this,NetFightActivity.class);
+                intent.putExtra("myColor", Config.BLACKNUM);
+                intent.putExtra("waitTime",30);
+                //把bundle也放在Intent中传过去
+                intent.putExtra("bundle",bundle);
+                startActivity(intent);
             }else if(content.equals("rejectFight") ){//对方拒绝对战
                 btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 isWaiting=false;

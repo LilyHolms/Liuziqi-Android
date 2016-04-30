@@ -1,5 +1,6 @@
 package entity;
 import cn.bmob.v3.BmobObject;
+
 /**
  * Created by camellia on 16/4/26.
  */
@@ -8,14 +9,22 @@ public class ChatMessage extends BmobObject {
     private String content;
     private String avatar;
     private String UserObjectId;
-    public ChatMessage(String UserObjectId,String name, String content){
+    private String time;
+    public ChatMessage(String UserObjectId, String name, String content){
         this.UserObjectId = UserObjectId;
         this.name = name;
         this.content = content;
+        this.time = time;
     }
 
     public String getName() {
         return name;
+    }
+    public String getcreatetime() {
+        return time;
+    }
+    public void setcreatetime(String time) {
+         this.time = time;
     }
     public void setName(String name) {
         this.name = name;

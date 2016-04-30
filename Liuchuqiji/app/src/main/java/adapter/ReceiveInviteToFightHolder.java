@@ -26,6 +26,7 @@ import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.v3.exception.BmobException;
 import core.BmobIMApplication;
+import core.Config;
 import entity.InViteToFightAgreeMessage;
 
 /**
@@ -86,7 +87,12 @@ public class ReceiveInviteToFightHolder extends BaseViewHolder {
         Bundle bundle = new Bundle();
         bundle.putSerializable("c", c);
         BaseActivity currentActivity = (BaseActivity) view.getContext();
-        currentActivity.startActivity(NetFightActivity.class, bundle, false);
+        Intent intent=new Intent(currentActivity,NetFightActivity.class);
+        intent.putExtra("myColor", Config.WHITENUM);
+        intent.putExtra("waitTime",30);
+        //把bundle也放在Intent中传过去
+        intent.putExtra("bundle",bundle);
+        currentActivity.startActivity(intent);
 
 
     }

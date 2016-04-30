@@ -3,74 +3,89 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_weight="20"
+    android:background="@drawable/ic_catalog_logged_background">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:layout_gravity="center"
+        android:layout_weight="4"
+        android:background="@drawable/ic_catalog_logged_background_head">
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_gravity="center"
             android:background="@mipmap/head"/>
         <TextView
             android:id="@+id/tv_my_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
             android:text="用户名"/>
         <TextView
             android:id="@+id/tv_my_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
             android:text="等级"/>
         <Button
             android:id="@+id/btn_to_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="退出"/>
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:background="@drawable/ic_catalog_logged_btn_logout"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="12"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
         <Button
             android:id="@+id/btn_to_localFight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="本地对弈"/>
+            android:background="@drawable/ic_catalog_logged_btn_localfight"/>
         <Button
             android:id="@+id/btn_to_NetFight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="联网对弈"/>
+            android:background="@drawable/ic_catalog_logged_btn_netfight"/>
         <Button
             android:id="@+id/btn_to_Friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="好友聊天"/>
+            android:background="@drawable/ic_catalog_logged_btn_friend"/>
         <Button
             android:id="@+id/btn_to_PersonalInfor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="修改信息"/>
+            android:background="@drawable/ic_catalog_logged_btn_personalinfo"/>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_to_Chatroom"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="聊天大厅"/>
-
+        android:layout_weight="4"
+        android:gravity="left"
+        android:orientation="vertical">
     <Button
         android:id="@+id/btn_to_Rule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="规则"/>
+        android:gravity="left"
+        android:layout_gravity="left"
+        android:background="@drawable/ic_catalog_logged_btn_rule" />
 
-
-
+    </LinearLayout>
 
 </LinearLayout>

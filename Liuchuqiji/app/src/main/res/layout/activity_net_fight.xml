@@ -22,10 +22,10 @@
 
     <include layout="@layout/include_board"/>
 
-    <Button
-        android:id="@+id/btn_withdraw_chess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:text="悔棋"/>
+    <!--<Button-->
+        <!--android:id="@+id/btn_withdraw_chess"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorAccent"-->
+        <!--android:text="悔棋"/>-->
 </LinearLayout>

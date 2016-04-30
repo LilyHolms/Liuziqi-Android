@@ -28,6 +28,9 @@ public class ChessGridAdapter extends BaseAdapter {
     private int screen_width;
     private int arr_board[][];
 
+    private int BLACKLAST=Config.BLACKLAST;
+    private int WHITELAST=Config.WHITELAST;
+    private int SELECTPOS=Config.SELECTPOS;
     public ChessGridAdapter() {
         //子类添加构造函数ChessGridNetAdapter(Context context,BmobIMConversation c)时,要求给父类添加无参构造函数
     }
@@ -66,15 +69,29 @@ public class ChessGridAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-
-        if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==BLACKNUM){
+        int type=arr_board[position/BOARDSIZE][position%BOARDSIZE]%9;
+        int issel=arr_board[position/BOARDSIZE][position%BOARDSIZE]/9;
+        if(type==BLACKNUM){
             imageView.setImageResource(R.drawable.blackchess);
-        }else if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==WHITENUM){
+        }else if(type==WHITENUM){
             imageView.setImageResource(R.drawable.whitechess);
-        }else if(arr_board[position/BOARDSIZE][position%BOARDSIZE]==KONGNUM){
+        }else if(type==KONGNUM){
             imageView.setImageResource(R.color.transparent);//shiyishi
+        }else if(type==WHITELAST){
+            imageView.setImageResource(R.drawable.whitechess_sel);
+            //arr_board[position/BOARDSIZE][position%BOARDSIZE]=WHITENUM;
+        }else if(type==BLACKLAST){
+            imageView.setImageResource(R.drawable.blackchess_sel);
+            //arr_board[position/BOARDSIZE][position%BOARDSIZE]=BLACKNUM;
         }
-
+        if(issel==1)
+        {
+            imageView.setBackgroundResource(R.drawable.select_frame);
+        }
+        else
+        {
+            imageView.setBackgroundResource(0);
+        }
         return imageView;
     }
 }
