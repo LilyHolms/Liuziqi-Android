@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,7 +17,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
@@ -75,6 +78,11 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
     @Bind(R.id.btn_AddFriend)
     Button btn_AddFriend;
 
+    @Bind(R.id.iv_back)
+    ImageView iv_back;
+
+    @Bind(R.id.tv_title)
+    TextView tv_title;
     boolean isWaiting = false;//标记是否已发送对战邀请,并正在等待回复,0没有等待,1正在等待
     // TODO:isWaiting还有一些地方要修改:对战过程中结束后
     static BmobIMMessage receiveInviteMsg = null;//收到的邀请消息,为了跳转Activity此值不变,设置成了静态
@@ -93,10 +101,17 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_chat);
+
         c= BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) getBundle().getSerializable("c"));
         initSwipeLayout();
         initBottomView();
         isFriend();
+        tv_title.setText(c.getConversationTitle());
+    }
+
+    @OnClick(R.id.iv_back)
+    public void click_to_back(){
+        onBackPressed();
     }
 
     //判断是否是好友
@@ -108,18 +123,23 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
 
         if( friend_A.compareTo(friend_B)<0 ){
             query.addWhereEqualTo("id", friend_A);
-            query.addWhereEqualTo("id", friend_B);
+            query.addWhereEqualTo("friendId", friend_B);
         }else{
             query.addWhereEqualTo("id", friend_B);
-            query.addWhereEqualTo("id", friend_A);
+            query.addWhereEqualTo("friendId", friend_A);
+
         }
         query.findObjects(this, new FindListener<Friends>() {
             @Override
             public void onSuccess(List<Friends> object) {
                 //已是好友
-                btn_AddFriend.setText("已是好友");
-                btn_AddFriend.setEnabled(false);
+                if (object.size() != 0) {
+                    btn_AddFriend.setText("已是好友");
+                    btn_AddFriend.setEnabled(false);
+                }
+
             }
+
             @Override
             public void onError(int code, String msg) {
                 //不是好友
