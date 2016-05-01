@@ -1,9 +1,13 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
+import android.support.v7.app.AlertDialog;
+import android.content.DialogInterface;
+import com.ant.liao.GifView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -15,6 +19,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import cn.bmob.newim.BmobIM;
 import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMUserInfo;
@@ -45,18 +50,16 @@ public class NetFightSetActivity extends BaseActivity {
 
     User user,user_fight;
     WhiteChessQueue player;
-    boolean flag;
     BmobRealTimeData userdata;
-    int click_cnt ;
+    int click_flag,cancel_flag;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_fight_set);
         user  = UserModel.getInstance().getCurrentUser();//获取当前用户
         user_fight = new User();//对方
-        flag = false;
-        click_cnt = 0;
 
-        ListenQueue();//多线程
+        click_flag = 1;
+        cancel_flag = 0;
         btn_determine=(Button)findViewById(R.id.btn_determine);
         btn_determine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,33 +102,75 @@ public class NetFightSetActivity extends BaseActivity {
             }
         });
     }
+    Thread thread;
+
     public void onDetermineClick(View view){
-        if(chess_type==-1||chess_time==-1)return;
-        click_cnt++;
-        if(click_cnt==1) {
-            User user = UserModel.getInstance().getCurrentUser();//获取当前用户
-            Toast.makeText(NetFightSetActivity.this, "press", Toast.LENGTH_LONG).show();
+        User user = UserModel.getInstance().getCurrentUser();//获取当前用户
+        // Toast.makeText(NetFightSetActivity.this, "press", Toast.LENGTH_LONG).show();
+        thread = new Thread(new Runnable() {//每点一下新建一个线程
+            @Override
+            public void run() {
+
+            }
+        });
+        Logger.i("当前线程进行匹配" + click_flag);
+        if (click_flag == 1) {
+            click_flag = 0;
+            if (chess_type == -1 || chess_time == -1) return;
             if (chess_type == Config.WHITENUM) {
                 findUser();
             } else {
-               // QueryToDelete();
+
                 FindMatchUser();
             }
         }
+        // thread.start();
+        if (chess_type == Config.WHITENUM) {
+            // Matchdialog();
+        }
+    }
+    GifView gf1;
+    protected  void Matchdialog(){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.dialog,
+                (ViewGroup) findViewById(R.id.dialog));
 
+        gf1 = (GifView) layout.findViewById(R.id.test_gif);
+        // 设置背景gif图片资源
+        gf1.setGifImage(R.drawable.test_gif);
+        //gf1.setOnClickListener(this);
+        gf1.setShowDimension(300, 300);
+        gf1.setGifImageType(GifView.GifImageType.COVER);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("匹配中...").setView(layout);
+
+        builder.setCancelable(false);
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {//取消匹配
+                if (player != null)
+                    Delete(player);
+                click_flag = 1;
+                cancel_flag = 1;
+                dialog.dismiss();
+                //NetFightSetActivity.this.finish();
+            }
+        });
+        builder.show();
     }
 
     void AddToQueue(){//白棋入队
         //TODO:只能插入一次
         player = new WhiteChessQueue(user.getUsername(),user.getObjectId(),chess_time,"");//第三个参数是否空闲信息
         player.setSysTime(player.getCreatedAt());
+        Logger.i("添加数据成功，返回objectId为：" + player.getObjectId() + ",数据在服务端的创建时间为：" +
+                player.getCreatedAt());
         player.save(this, new SaveListener() {
             @Override
             public void onSuccess() {
                 // TODO Auto-generated method stub
-
                 Logger.i("添加数据成功，返回objectId为：" + player.getObjectId() + ",数据在服务端的创建时间为：" +
                         player.getCreatedAt());
+                Matchdialog();
             }
 
             @Override
@@ -142,24 +187,19 @@ public class NetFightSetActivity extends BaseActivity {
         Logger.i("time" + chess_time + "条数据。");
         BmobQuery<WhiteChessQueue> query = new BmobQuery<WhiteChessQueue>();
 
-//state“free”的数据
         query.addWhereEqualTo("chooseTime", chess_time);
-//返回1条数据，如果不加上这条语句，默认返回10条数据
         query.setLimit(10);
         query.order("createdAt");/// 根据createdAt字段升序显示数据
-//执行查询方法
         query.findObjects(this, new FindListener<WhiteChessQueue>() {
             @Override
             public void onSuccess(List<WhiteChessQueue> object) {
                 // TODO Auto-generated method stub
-                 Logger.i("查询成功：共" + object.size() + "条数据。");
+                Logger.i("查询成功：共" + object.size() + "条数据。");
                 //按时间排序
-
-                if (object.size() != 0) {
-                    Logger.i("取消监听");
-                    userdata.unsubTableUpdate("WhiteChessQueue");
+                if (object.size() == 0) {//黑棋
+                    Logger.i("Fail:查询成功：共" + object.size());
+                    MatchFaildialog();//匹配失败对话框
                 }
-                boolean isfind = false;
                 for (WhiteChessQueue whiteplayer : object) {
 
                     Logger.i("查询成功:" + whiteplayer.getObjectId() + " " + whiteplayer.getName());
@@ -169,13 +209,9 @@ public class NetFightSetActivity extends BaseActivity {
                         whiteplayer.setUserObjectId2(user.getObjectId());
                         user_fight.setObjectId(whiteplayer.getUserObjectId());
                         Update(whiteplayer);
-                        isfind = true;
                         break;
                     }
                 }
-                if(isfind==false){
-                    userdata.subTableUpdate("WhiteChessQueue");
-                }
             }
 
             @Override
@@ -185,36 +221,6 @@ public class NetFightSetActivity extends BaseActivity {
                 Logger.i("查询失败：" + msg);
             }
         });
-    }
-    void QueryToDelete(){
-        BmobQuery<WhiteChessQueue> query = new BmobQuery<WhiteChessQueue>();
-
-//state“free”的数据
-        query.addWhereEqualTo("UserObjectId", user.getObjectId());
-//返回1条数据，如果不加上这条语句，默认返回10条数据
-        query.setLimit(10);
-
-//执行查询方法
-        query.findObjects(this, new FindListener<WhiteChessQueue>() {
-            @Override
-            public void onSuccess(List<WhiteChessQueue> object) {
-                // TODO Auto-generated method stub
-                Logger.i("查询成功：共删除" + object.size() + "条数据。");
-                //按时间排序
-
-                for (WhiteChessQueue whiteplayer : object) {
-                    Delete(whiteplayer);
-                }
-            }
-
-            @Override
-            public void onError(int code, String msg) {
-                // TODO Auto-generated method stub
-                //Toast.makeText(this, "查询失败：" + msg, Toast.LENGTH_SHORT).show();
-                Logger.i("查询失败：" + msg);
-            }
-        });
-
     }
 
     void findUser(){
@@ -223,6 +229,7 @@ public class NetFightSetActivity extends BaseActivity {
         query.count(this, WhiteChessQueue.class, new CountListener() {
             @Override
             public void onSuccess(int count) {
+                ListenQueue();//多线程
                 // TODO Auto-generated method stub
                 Logger.i("user count: " + count);
                 if (count == 0) {
@@ -246,31 +253,13 @@ public class NetFightSetActivity extends BaseActivity {
 
                 if (BmobRealTimeData.ACTION_UPDATETABLE.equals(arg0.optString("action"))) {
                     JSONObject data = arg0.optJSONObject("data");
-                    if(chess_type == Config.WHITENUM) {
-
+                    if (cancel_flag == 0) {
                         if (data.optString("UserObjectId").equals(user.getObjectId()) && !data.optString("UserObjectId2").isEmpty()) {
                             Logger.i("更新" + data.optString("UserObjectId2"));
                             user_fight.setObjectId(data.optString("UserObjectId2"));
                             Delete(player);
                             MatchSuccess();
                         }
-                    }
-                    else {
-                            if(click_cnt>0) {
-
-                                Logger.i("白棋来了" + data.optString("chooseTime") + data.optString("ObjectId"));
-                                if (data.optString("chooseTime").compareTo(String.valueOf(chess_time)) == 0){
-                                    Logger.i("时间相等");
-                                        if(data.optString("UserObjectId2").length()==0) {
-                                            Logger.i("对战对象为空");
-                                            Logger.i(data.optString("UserObjectId") + user.getObjectId());
-                                            if (data.optString("UserObjectId").compareTo(user.getObjectId()) != 0) {
-                                                Logger.i("对战对象不是自己");
-                                                FindMatchUser();
-                                            }
-                                        }
-                                }
-                            }
                     }
                 }
             }
@@ -279,24 +268,21 @@ public class NetFightSetActivity extends BaseActivity {
 
                 if (userdata.isConnected()) {
 
-
                     Logger.i("连接成功 success");
-                    //Logger.i("连接成功 success");
-                    //userdata.subRowUpdate("WhiteChessQueue", player.getObjectId());
                     userdata.subTableUpdate("WhiteChessQueue");
 
                 }
             }
         });
 
-        }
+    }
     void Delete(WhiteChessQueue p2) {
+
         p2.delete(this, new DeleteListener() {
             @Override
             public void onSuccess() {
                 // TODO Auto-generated method stub
                 Logger.i("删除成功");
-
             }
 
             @Override
@@ -309,7 +295,6 @@ public class NetFightSetActivity extends BaseActivity {
     }
     void Update(WhiteChessQueue p2) {
         Logger.i("WhiteChessQueue p2"+ p2.getUserObjectId2());
-
 
         p2.update(this, p2.getObjectId(), new UpdateListener() {
             @Override
@@ -340,7 +325,7 @@ public class NetFightSetActivity extends BaseActivity {
                 // TODO Auto-generated method stub
                 //toast("查询成功：");
                 user_fight.setUsername(object.getUsername());
-                //user_fight.setAvatar(object.getAvatar());
+               // user_fight.setAvatar(object.getAvatar());
                 StartCov();
             }
 
@@ -355,7 +340,9 @@ public class NetFightSetActivity extends BaseActivity {
 
     }
     void StartCov(){
-       // userdata.unsubTableUpdate("WhiteChessQueue");
+        if(chess_type == Config.WHITENUM) {//白棋停止监听
+            userdata.unsubTableUpdate("WhiteChessQueue");
+        }
         Logger.i("对方信息:" + user_fight.getUsername() + user_fight.getObjectId());
         BmobIMUserInfo info = new BmobIMUserInfo(user_fight.getObjectId(),user_fight.getUsername(),user_fight.getAvatar());
 
@@ -368,13 +355,13 @@ public class NetFightSetActivity extends BaseActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("c", c);
 
-                    Intent intent=new Intent(NetFightSetActivity.this,NetFightActivity.class);
+                    Intent intent = new Intent(NetFightSetActivity.this, NetFightActivity.class);
                     intent.putExtra("myColor", chess_type);
-                    intent.putExtra("waitTime",chess_time);
+                    intent.putExtra("waitTime", chess_time);
                     //把bundle也放在Intent中传过去
-                    intent.putExtra("bundle",bundle);
+                    intent.putExtra("bundle", bundle);
                     startActivity(intent);
-                    // startActivity(NetFightActivity.class, bundle, false);//lily这里设置跳转到的界面
+
                 } else {
                     //toast(e.getMessage() + "(" + e.getErrorCode() + ")");
                 }
@@ -385,5 +372,25 @@ public class NetFightSetActivity extends BaseActivity {
     protected void onDestroy() {
 
         super.onDestroy();
+    }
+    protected void MatchFaildialog() {//匹配失败对话框
+
+        AlertDialog.Builder builder = new  AlertDialog.Builder(NetFightSetActivity.this);
+
+        builder.setCancelable(false);
+        builder.setMessage("无白棋在线、匹配失败");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                click_flag = 1;
+                dialog.dismiss();
+                //NetFightSetActivity.this.finish();
+            }
+        });
+        builder.create().show();
+    }
+    protected void ReMatchDialog(){
+
     }
 }

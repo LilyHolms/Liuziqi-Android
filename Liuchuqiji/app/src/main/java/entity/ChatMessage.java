@@ -9,15 +9,24 @@ public class ChatMessage extends BmobObject {
     private String content;
     private String avatar;
     private String UserObjectId;
+    private String createtime;
+
     public ChatMessage(String UserObjectId, String name, String content){
         this.UserObjectId = UserObjectId;
         this.name = name;
         this.content = content;
     }
 
+    public String getCreateTime() {
+        return createtime;
+    }
+    public void setCreateTime(String createtime) {
+        this.createtime = createtime;
+    }
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }

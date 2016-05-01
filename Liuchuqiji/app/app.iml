@@ -89,6 +89,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
     <orderEntry type="library" exported="" name="BmobSDK_V3.4.6_0304" level="project" />
+    <orderEntry type="library" exported="" name="GifView" level="project" />
     <orderEntry type="library" exported="" name="play-services-appindexing-8.1.0" level="project" />
     <orderEntry type="library" exported="" name="classes" level="project" />
     <orderEntry type="library" exported="" name="eventbus-3.0.0" level="project" />
