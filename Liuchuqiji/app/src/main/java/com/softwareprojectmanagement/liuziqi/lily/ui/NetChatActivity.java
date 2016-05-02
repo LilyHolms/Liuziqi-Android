@@ -78,9 +78,6 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
     @Bind(R.id.btn_AddFriend)
     Button btn_AddFriend;
 
-    @Bind(R.id.iv_back)
-    ImageView iv_back;
-
     @Bind(R.id.tv_title)
     TextView tv_title;
     boolean isWaiting = false;//标记是否已发送对战邀请,并正在等待回复,0没有等待,1正在等待
@@ -109,10 +106,6 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         tv_title.setText(c.getConversationTitle());
     }
 
-    @OnClick(R.id.iv_back)
-    public void click_to_back(){
-        onBackPressed();
-    }
 
     //判断是否是好友
     private void isFriend(){
@@ -134,7 +127,7 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             public void onSuccess(List<Friends> object) {
                 //已是好友
                 if (object.size() != 0) {
-                    btn_AddFriend.setText("已是好友");
+                    btn_AddFriend.setBackgroundResource(R.drawable.ic_chat_btn_are_friends);
                     btn_AddFriend.setEnabled(false);
                 }
 
@@ -436,7 +429,7 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 //ps已在发送方点击同意按钮时将好友信息插入数据库
                 toast("对方同意了您的好友申请");
                 //已是好友
-                btn_AddFriend.setText("已是好友");
+                btn_AddFriend.setBackgroundResource(R.drawable.ic_chat_btn_are_friends);
                 btn_AddFriend.setEnabled(false);
             }else if(content.equals("rejectFriend")){
                 toast("对方拒绝了您的好友申请");

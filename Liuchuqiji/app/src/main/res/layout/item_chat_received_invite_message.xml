@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/tv_time"
+        android:padding="5dp"
         android:background="@color/color_msg_system_time_bg"
         android:textColor="@color/colorWhite"
         android:layout_width="wrap_content"
@@ -17,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp" >
 
         <ImageView
@@ -33,11 +34,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_avatar"
-            android:background="@drawable/chat_left_qp"
+            android:background="@drawable/ic_chat_left_qp"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:paddingLeft="30dp"
-            android:paddingRight="15dp"
+            android:paddingRight="35dp"
             android:minWidth="80dp"
             android:maxWidth="225.0dip"
             android:clickable="true"
@@ -63,12 +64,12 @@
                     android:id="@+id/btn_agree_fight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="迎战"/>
+                    android:background="@drawable/ic_chat_btn_agree"/>
                 <Button
                     android:id="@+id/btn_reject_fight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="拒绝"/>
+                    android:background="@drawable/ic_chat_btn_reject"/>
             </LinearLayout>
         </LinearLayout>
 
