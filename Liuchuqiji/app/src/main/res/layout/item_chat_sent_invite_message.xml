@@ -34,14 +34,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/iv_avatar"
-            android:background="@drawable/chat_right_qp"
+            android:background="@drawable/ic_chat_right_qp"
             android:lineSpacingExtra="3dp"
             android:maxWidth="225.0dip"
             android:minHeight="40dp"
             android:minWidth="80dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:paddingLeft="15dp"
+            android:paddingLeft="35dp"
             android:paddingRight="30dp"
             android:layout_marginRight="5dp"
             android:orientation="vertical">
@@ -57,7 +57,7 @@
                 android:id="@+id/btn_withdraw_invite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="撤回"/>
+                android:background="@drawable/ic_chat_btn_withdraw"/>
         </LinearLayout>
 
 

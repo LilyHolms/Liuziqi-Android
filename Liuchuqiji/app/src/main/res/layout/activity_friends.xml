@@ -3,38 +3,26 @@
     android:id="@+id/ll_friends"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ic_chat_bg"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary">
+        android:background="@color/transparent">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical">
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingRight="5dp"
-                android:paddingLeft="5dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/base_action_bar_back_bg_selector"
-                />
 
-            <TextView
+            <ImageView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_margin="2dp"
-                android:textColor="@color/colorWhite"
-                android:textSize="18sp"
-                android:text="我的好友"
+                android:src="@drawable/ic_friend_tv_myfriend"
                 />
 
             <Button
@@ -49,9 +37,7 @@
                 android:gravity="center"
                 android:layout_marginRight="16dp"
                 android:layout_centerVertical="true"
-                android:text="搜索"
-                android:textColor="@color/colorWhite"
-                android:textSize="16sp" />
+                android:background="@drawable/ic_friend_btn_search" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 

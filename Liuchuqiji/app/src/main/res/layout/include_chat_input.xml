@@ -3,23 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
+<!--
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorLightGray"/>
-
+-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
         <Button
             android:id="@+id/btn_invitetoFight"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginLeft="10dp"
             android:checked="false"
-            android:background="@color/colorAccent"
+            android:background="@drawable/ic_chat_btn_fight"
             android:textColor="@color/colorWhite"
             android:gravity="center"/>
         <EditText
@@ -27,14 +27,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="请输入消息"
-            android:gravity="left|center"/>
+            android:hint="请输入消息..."
+            android:gravity="left|center"
+            android:background="@drawable/ic_input"/>
         <Button
             android:id="@+id/btn_chat_send"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
-            android:text="发送"
+            android:background="@drawable/ic_chat_btn_send"
             android:gravity="center"/>
 
     </LinearLayout>
