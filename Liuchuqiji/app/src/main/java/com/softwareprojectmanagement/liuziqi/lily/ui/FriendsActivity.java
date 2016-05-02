@@ -50,8 +50,6 @@ public class FriendsActivity extends BaseActivity {
     List<String> list_Allf;//我的所有好友的username
     @Bind(R.id.ll_friends)
     LinearLayout ll_friends;
-    @Bind(R.id.iv_back)
-    ImageView iv_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +93,6 @@ public class FriendsActivity extends BaseActivity {
         startActivity(SearchUserActivity.class, null, false);
     }
 
-    @OnClick(R.id.iv_back)
-    public void click_to_back(){
-        onBackPressed();
-    }
     //查询好友名字
     public void queryFriendname(){
         BmobQuery<Friends> list_f1 = new BmobQuery<Friends>();

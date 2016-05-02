@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="11dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/ic_gameview_photo_black" />
 
         <TextView
             android:id="@+id/name"
@@ -37,10 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="11dp"
-            android:background="@color/colorAccent"
-            android:text="聊天"
-            android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:background="@drawable/ic_friend_btn_chat" />
     </RelativeLayout>
 
 </LinearLayout>

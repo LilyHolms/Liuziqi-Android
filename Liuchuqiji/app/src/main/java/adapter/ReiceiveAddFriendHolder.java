@@ -56,7 +56,7 @@ public class ReiceiveAddFriendHolder extends BaseViewHolder {
         super(context, root, R.layout.item_chat_received_invite_message, onRecyclerViewListener);
         this.c = c;
         this.context = context;
-        btn_agree_fight.setText("同意");
+//        btn_agree_fight.setText("同意");
     }
 
     @OnClick({R.id.iv_avatar})
