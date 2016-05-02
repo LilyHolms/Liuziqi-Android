@@ -78,6 +78,7 @@ public class GameView2 extends AppCompatActivity {
     private TextView view_blackRes;
     private TextView view_whiteRes;
 
+
     //是否有选择框存在
     private boolean select=false;
     private double selX,selY;   //当前鼠标位置
@@ -118,10 +119,10 @@ public class GameView2 extends AppCompatActivity {
 
         //绑定各个按钮事件，本地游戏隐藏聊按钮
         btn_return=(Button)this.findViewById(R.id.btn_return);
-        btn_chat=(Button)this.findViewById(R.id.btn_chat);
+        //btn_chat=(Button)this.findViewById(R.id.btn_chat);
         btn_lose=(Button)this.findViewById(R.id.btn_lose);
 
-        btn_chat.setVisibility(View.GONE);
+        //btn_chat.setVisibility(View.GONE);
 
         //悔棋按钮事件
         btn_return.setOnClickListener(new View.OnClickListener() {

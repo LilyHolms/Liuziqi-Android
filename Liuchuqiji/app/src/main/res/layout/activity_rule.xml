@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--规则界面,尚未设计-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="50dp"
+    android:paddingRight="50dp"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.softwareprojectmanagement.liuziqi.lily.ui.RuleActivity">
+    tools:context="com.softwareprojectmanagement.liuziqi.lily.ui.RuleActivity"
+    android:background="@drawable/local_fight_bg"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="游戏规则：黑方先手，先下一颗棋子，接下来双方每手下两颗棋子，率先连成6课或以上棋子在同一条直线的玩家获胜。"
+        android:textSize="20sp"
+        android:id="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="对弈界面操作：先触屏移动选择下棋的位置，点击落按钮进行落子，悔可以反悔己方回合下的第一个棋子，降按钮则直接认输。"
+        android:textSize="20sp"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="50dp" />
 
 </RelativeLayout>

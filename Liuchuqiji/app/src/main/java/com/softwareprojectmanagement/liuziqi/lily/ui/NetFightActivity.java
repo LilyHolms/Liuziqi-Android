@@ -1,20 +1,29 @@
 package com.softwareprojectmanagement.liuziqi.lily.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ant.liao.GifView;
 import com.orhanobut.logger.Logger;
 import com.softwareprojectmanagement.liuziqi.jelly.move;
 
@@ -61,6 +70,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     private int BLACKLAST=Config.BLACKLAST;
     private int WHITELAST=Config.WHITELAST;
     private int SELECTPOS=Config.SELECTPOS;
+    private int LOSE=-10;
     private int screen_height;
     int screen_width;//屏幕宽度
     private int arr_board[][] = new int[BOARDSIZE][BOARDSIZE];
@@ -273,7 +283,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
             @Override
             public void onClick(View v) {
                 if (!isGameover) {
-                    //drawGameRes(playColor ^ 3);
+                    drawGameRes(myColor^3);
                 }
             }
         });
@@ -393,15 +403,19 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     }
                     //判断胜负
                     if (checkWin(nowX, nowY)) {
-                        //drawGameRes(playColor ^ 3);
-                        if (arr_board[nowX][nowY] == WHITENUM) {
-                            Toast.makeText(NetFightActivity.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
+                        drawGameRes(playColor ^ 3);
+                        if (arr_board[nowX][nowY] == myColor) {
+                            Toast.makeText(NetFightActivity.this, "获胜！", Toast.LENGTH_SHORT).show();
+                            //TODO:弹出win.jpg并可按返回按钮关闭dialog
+
                         } else {
-                            Toast.makeText(NetFightActivity.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NetFightActivity.this, "失败！", Toast.LENGTH_SHORT).show();
+                            //TODO:弹出lose.jpg并可按返回按钮关闭dialog
                         }
+
                     } else if (chechDraw()) {
-                        //drawGameRes(KONGNUM);
-                        Toast.makeText(NetFightActivity.this, "游戏结束！平局！", Toast.LENGTH_SHORT).show();
+                        drawGameRes(KONGNUM);
+                        Toast.makeText(NetFightActivity.this, "平局！", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -546,6 +560,12 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         getSum=0;
                         chessGridAdapter.notifyDataSetChanged();
                     }
+                }
+                else if(temp_color_int==LOSE)
+                {
+                    //处理对方认输
+                    drawGameRes(myColor);
+                    //TODO:弹出win.jpg并可按返回按钮关闭dialog
                 }
                 else
                 {
@@ -734,5 +754,74 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         }
         isGameover=true;
         return true;
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            showDialog(1);
+            return true;
+        } else
+            return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if (id == 1) {
+            return new AlertDialog.Builder(NetFightActivity.this)
+                    .setMessage("是否确定认输并返回?")
+                    .setTitle("认输并返回")
+                    .setPositiveButton("确定",
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+                                    android.os.Process
+                                            .killProcess(android.os.Process
+                                                    .myPid());
+                                    finish();
+
+                                }
+                            })
+                    .setNegativeButton("取消",
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+
+                                }
+                            }).create();
+
+        }
+        return null;
+
+    }
+
+    private void drawGameRes(int winColor)
+    {
+        if(winColor==BLACKNUM)
+        {
+            view_steps.setText("游戏结束！黑方获胜！");
+            whiteStepTimer.stop();
+            whiteTimer.stop();
+            isGameover=true;
+        }
+        else if(winColor==WHITENUM)
+        {
+            view_steps.setText("游戏结束！白方获胜！");
+            blackStepTimer.stop();
+            blackTimer.stop();
+            isGameover=true;
+        }
+        else if(winColor==KONGNUM)
+        {
+            view_steps.setText("游戏结束！平局！");
+            whiteStepTimer.stop();
+            whiteTimer.stop();
+            blackStepTimer.stop();
+            blackTimer.stop();
+            isGameover=true;
+        }
     }
 }

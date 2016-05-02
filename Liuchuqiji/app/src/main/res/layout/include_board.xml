@@ -47,7 +47,7 @@
                 android:id="@+id/blackRes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textColor="#FF0000"
                 android:gravity="center"/>
         </LinearLayout>
@@ -92,7 +92,6 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="12级"
             android:textSize="20sp"
             android:layout_gravity="center"
             android:textColor="#FFFFFF"/>
@@ -155,7 +154,6 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="18级"
             android:textSize="20sp"
             android:layout_gravity="center"
             android:textColor="#FFFFFF"/>
@@ -218,25 +216,20 @@
         android:layout_weight="14"
         android:gravity="center">
         <Button
-            android:id="@+id/btn_return"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_play_btn_return"/>
-        <Button
-            android:id="@+id/btn_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_play_btn_chat"/>
-        <Button
             android:id="@+id/btn_lose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_play_btn_lose"/>
         <Button
+            android:id="@+id/btn_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_btn_return"/>
+        <Button
             android:id="@+id/btn_move"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_play_btn_chat"/>
+            android:background="@drawable/ic_play_btn_make"/>
     </LinearLayout>
 
 </LinearLayout>

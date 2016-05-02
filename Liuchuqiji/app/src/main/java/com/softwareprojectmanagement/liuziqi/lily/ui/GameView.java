@@ -76,7 +76,7 @@ public class GameView extends AppCompatActivity {
     private move lastWhite=new move();
 
     private Button btn_return;
-    private Button btn_chat;
+    //private Button btn_chat;
     private Button btn_lose;
     private Button btn_move;
 
@@ -141,10 +141,10 @@ public class GameView extends AppCompatActivity {
 
         //绑定各个按钮事件，本地游戏隐藏聊按钮
         btn_return=(Button)this.findViewById(R.id.btn_return);
-        btn_chat=(Button)this.findViewById(R.id.btn_chat);
+//        btn_chat=(Button)this.findViewById(R.id.btn_chat);
         btn_lose=(Button)this.findViewById(R.id.btn_lose);
 
-        btn_chat.setVisibility(View.GONE);
+//        btn_chat.setVisibility(View.GONE);
 
         //悔棋按钮事件
         btn_return.setOnClickListener(new View.OnClickListener() {
