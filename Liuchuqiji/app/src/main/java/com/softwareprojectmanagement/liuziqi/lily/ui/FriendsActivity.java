@@ -184,4 +184,9 @@ public class FriendsActivity extends BaseActivity {
         sw_refresh.setRefreshing(true);
         queryFriendname();
     }
+
+    @OnClick(R.id.btn_to_ChatRoom)
+    public void onToChatRoomClick(View view){
+        startActivity(ChatRoomActivity.class, null, false);
+    }
 }

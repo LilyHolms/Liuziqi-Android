@@ -355,8 +355,8 @@ public class GameView extends AppCompatActivity {
         blackTimer=(Chronometer)this.findViewById(R.id.blackTimer);
         whiteStepTimer=(Chronometer)this.findViewById(R.id.whiteStepTimer);
         blackStepTimer=(Chronometer)this.findViewById(R.id.blackStepTimer);
-        whiteStepTimer.setText(stepTime+"s");
-        blackStepTimer.setText(stepTime+"s");
+        whiteStepTimer.setText(stepTime + "s");
+        blackStepTimer.setText(stepTime + "s");
         //设置单步计时器的时间格式
         whiteStep=stepTime;
         blackStep=stepTime;
@@ -378,13 +378,20 @@ public class GameView extends AppCompatActivity {
             public void onChronometerTick(Chronometer chronometer) {
                 if (blackStep > 0)
                     blackStep--;
-                chronometer.setText("" + blackStep+"s");
-                if(blackStep==0)
-                    chronometer.setTextColor(Color.rgb(255,0,0));
+                chronometer.setText("" + blackStep + "s");
+                if (blackStep == 0)
+                    chronometer.setTextColor(Color.rgb(255, 0, 0));
             }
         });
-        blackTimer.start();
-        blackStepTimer.start();
+        if(mycolor==BLACKNUM) {
+            blackTimer.start();
+            blackStepTimer.start();
+        }
+        else
+        {
+            whiteTimer.start();
+            whiteStepTimer.start();
+        }
     }
 
     protected Handler updateBoardHandler=new Handler() {
@@ -492,6 +499,7 @@ public class GameView extends AppCompatActivity {
                 lastBlack.x[i]=nowMove.x[i];
                 lastBlack.y[i]=nowMove.y[i];
             }
+       //     changeTimer(BLACKNUM);
             myAdapter.notifyDataSetChanged();
         }
         blackPhoto=(ImageView)this.findViewById(R.id.blackPhoto);
