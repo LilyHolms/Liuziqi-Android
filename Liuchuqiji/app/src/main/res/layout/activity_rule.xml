@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="游戏规则：黑方先手，先下一颗棋子，接下来双方每手下两颗棋子，率先连成6课或以上棋子在同一条直线的玩家获胜。"
+        android:text="游戏规则：黑方先手，先下一颗棋子，接下来双方每手下两颗棋子，率先在同一条直线上连成6颗或以上棋子的玩家获胜。"
         android:textSize="20sp"
         android:id="@+id/textView" />
 

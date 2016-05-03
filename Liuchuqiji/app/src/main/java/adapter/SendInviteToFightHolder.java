@@ -25,6 +25,7 @@ import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.v3.exception.BmobException;
 import entity.InViteToFightWithdrawMessage;
+import model.UserModel;
 
 /**
  * Created by Lily on 16/4/10.
@@ -56,7 +57,7 @@ public class SendInviteToFightHolder extends BaseViewHolder implements View.OnCl
     public SendInviteToFightHolder(Context context, ViewGroup root,BmobIMConversation c,OnRecyclerViewListener listener) {
         super(context, root, R.layout.item_chat_sent_invite_message, listener);
         this.c =c;
-
+        UserModel.getInstance().loadAvatar(context, iv_avatar);//头像
     }
 
     @Override
@@ -64,7 +65,6 @@ public class SendInviteToFightHolder extends BaseViewHolder implements View.OnCl
         final BmobIMMessage message = (BmobIMMessage)o;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         final BmobIMUserInfo info = message.getBmobIMUserInfo();
-//        ViewUtil.setAvatar(info != null ? info.getAvatar() : null, R.mipmap.head, iv_avatar);
         String time = dateFormat.format(message.getCreateTime());
         String content = message.getContent();
         tv_message.setText(content);

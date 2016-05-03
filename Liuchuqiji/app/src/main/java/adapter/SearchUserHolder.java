@@ -22,7 +22,7 @@ import event.ChatEvent;
 public class SearchUserHolder extends BaseViewHolder {
 
     @Bind(R.id.avatar)
-    public ImageView avatar;
+    public ImageView iv_avatar;
     @Bind(R.id.name)
     public TextView name;
     @Bind(R.id.btn_chat)
@@ -37,6 +37,7 @@ public class SearchUserHolder extends BaseViewHolder {
         final User user =(User)o;
 //lily还没写头像相关方法,删掉了viewutil
 //        ViewUtil.setAvatar(user.getAvatar(), R.mipmap.head, avatar);
+        user.loadAvatar(getContext(), iv_avatar);//头像
         name.setText(user.getUsername());
         btn_chat.setOnClickListener(new View.OnClickListener() {
             @Override

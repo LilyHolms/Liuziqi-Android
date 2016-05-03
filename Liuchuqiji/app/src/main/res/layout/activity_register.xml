@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/ic_register_btn_id"
         android:paddingLeft="90dp"
+        android:textColor="#ffdddddd"
         android:paddingStart="90dp"/>
     <EditText
         android:id="@+id/et_register_password"
@@ -34,6 +35,7 @@
         android:background="@drawable/ic_register_btn_password"
         android:paddingLeft="90dp"
         android:paddingStart="90dp"
+        android:textColor="#ffdddddd"
         android:inputType="textPassword" />
     <EditText
         android:id="@+id/et_register_repassword"
@@ -42,6 +44,7 @@
         android:background="@drawable/ic_register_btn_repassword"
         android:paddingLeft="90dp"
         android:paddingStart="90dp"
+        android:textColor="#ffdddddd"
         android:inputType="textPassword"/>
 
 

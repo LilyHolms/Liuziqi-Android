@@ -49,8 +49,8 @@ public class CatalogLoggedActivity extends BaseActivity  implements ObseverListe
         setContentView(R.layout.catalog_logged_activity);
         bmobconnect();
         //获取用户名 加载头像
-        tv_my_username.setText(UserModel.getInstance().getNickname());
-        UserModel.getInstance().loadAvatar(this, iv_avatar);
+        tv_my_username.setText(UserModel.getInstance().getCurrentUser().getUsername());
+        UserModel.getInstance().loadAvatar(this, iv_avatar);//头像
         tv_my_rank.setText("积分：" + UserModel.getInstance().getPoints());
     }
 /*-------------------------连接服务器-------------------------------*/

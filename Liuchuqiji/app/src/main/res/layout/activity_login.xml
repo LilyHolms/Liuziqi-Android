@@ -33,6 +33,7 @@
             android:background="@drawable/ic_login_btn_id2"
             android:paddingLeft="90dp"
             android:paddingStart="90dp"
+            android:singleLine="true"
             android:textColor="#ffdddddd" />
         <EditText
             android:id="@+id/et_password"
@@ -42,6 +43,7 @@
             android:paddingLeft="90dp"
             android:paddingStart="90dp"
             android:inputType="textPassword"
+            android:singleLine="true"
             android:textColor="#ffdddddd" />
 
 

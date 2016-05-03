@@ -27,12 +27,8 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Handler;
 import com.softwareprojectmanagement.liuziqi.jelly.*;
-import adapter.ChessGridAdapter;
 /**
- * Created by Lily on 16/3/14.
- * 实现一个简易的棋盘界面,点击落子,无算法无AI
- * 应该能适配不同屏幕
- * 目前棋盘为15*15,更改棋盘大小只需修改BOARDSIZE值
+ * 人人对弈
  */
 public class GameView extends AppCompatActivity {
     private int KONGNUM = Config.KONGNUM;
@@ -103,6 +99,7 @@ public class GameView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.include_board);
+        getSupportActionBar().hide();//隐藏toolbar
         initView();
         myGame();
     }
@@ -118,9 +115,9 @@ public class GameView extends AppCompatActivity {
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
-        linearParams.height = (screen_height*525/1000 / BOARDSIZE) * BOARDSIZE;
+        linearParams.height = (screen_height*490/1000 / BOARDSIZE) * BOARDSIZE;
         linearParams.width = linearParams.height;
-        itemSize=screen_height*525/1000 / BOARDSIZE;
+        itemSize=screen_height*490/1000/ BOARDSIZE;
         gv_gameView.setLayoutParams(linearParams);
 
         //为GridView设置适配器

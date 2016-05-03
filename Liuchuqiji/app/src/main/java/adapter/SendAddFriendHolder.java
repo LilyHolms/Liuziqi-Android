@@ -18,6 +18,7 @@ import cn.bmob.newim.bean.BmobIMSendStatus;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.v3.exception.BmobException;
+import model.UserModel;
 
 /**
  * Created by Lily on 16/4/22.
@@ -46,7 +47,7 @@ public class SendAddFriendHolder extends BaseViewHolder implements View.OnClickL
     public SendAddFriendHolder(Context context, ViewGroup root, BmobIMConversation c, OnRecyclerViewListener listener) {
         super(context, root, R.layout.item_chat_sent_message, listener);
         this.c =c;
-
+        UserModel.getInstance().loadAvatar(context, iv_avatar);//头像
     }
 
     @Override
@@ -54,7 +55,6 @@ public class SendAddFriendHolder extends BaseViewHolder implements View.OnClickL
         final BmobIMMessage message = (BmobIMMessage)o;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         final BmobIMUserInfo info = message.getBmobIMUserInfo();
-//        ViewUtil.setAvatar(info != null ? info.getAvatar() : null, R.mipmap.head, iv_avatar);
         String time = dateFormat.format(message.getCreateTime());
         String content = "你发送了一封好友申请";
         tv_message.setText(content);

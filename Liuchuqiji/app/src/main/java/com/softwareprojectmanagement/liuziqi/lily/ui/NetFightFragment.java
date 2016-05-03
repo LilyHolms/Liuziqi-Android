@@ -44,10 +44,10 @@ public class NetFightFragment extends BaseFragment implements OnClickListener {
 
 
 
-    @Bind(R.id.extra_message)
-    TextView extra_message;
-    @Bind(R.id.opponent_name)
-    TextView opponent_name;
+//    @Bind(R.id.extra_message)
+//    TextView extra_message;
+//    @Bind(R.id.opponent_name)
+//    TextView opponent_name;
 
     @Bind(R.id.gridview)
     GridView gv_gameView;
@@ -233,10 +233,10 @@ public class NetFightFragment extends BaseFragment implements OnClickListener {
     public void bindData(Object o) {//不知道有没有用
         final NetFightMessage message = (NetFightMessage) o;
         String content = message.getContent();
-        extra_message.setText(content);//这里消息类型不知道怎么调整
+//        extra_message.setText(content);//这里消息类型不知道怎么调整
         final BmobIMUserInfo info = message.getBmobIMUserInfo();
 //        ViewUtil.setAvatar(info != null ? info.getAvatar() : null, R.mipmap.head, iv_avatar);
-        opponent_name.setText(info.getName());//显示对手name
+//        opponent_name.setText(info.getName());//显示对手name
 
     }
     //shiyishi end

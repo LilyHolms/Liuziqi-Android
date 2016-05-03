@@ -125,8 +125,7 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
         query.findObjects(this, new FindListener<Friends>() {
             @Override
             public void onSuccess(List<Friends> object) {
-                //已是好友
-                if (object.size() != 0) {
+                if (object.size() != 0) {//已是好友
                     btn_AddFriend.setBackgroundResource(R.drawable.ic_chat_btn_are_friends);
                     btn_AddFriend.setEnabled(false);
                 }
@@ -135,7 +134,6 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
 
             @Override
             public void onError(int code, String msg) {
-                //不是好友
             }
         });
     }
@@ -321,7 +319,8 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             public void done(BmobIMMessage msg, BmobException e) {
                 Logger.i("othermsg:" + msg.toString());
                 if (e == null) {//发送成功
-                    btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//                    btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    btn_invitetoFight.setBackgroundResource(R.drawable.ic_chat_btn_fight_red);
                     isWaiting=true;//1表示正在等待
                     adapter.addMessage(msg);//将消息显示到本地列表
                     scrollToBottom();
@@ -418,7 +417,8 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
                 intent.putExtra("bundle",bundle);
                 startActivity(intent);
             }else if(content.equals("rejectFight") ){//对方拒绝对战
-                btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+//                btn_invitetoFight.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                btn_invitetoFight.setBackgroundResource(R.drawable.ic_chat_btn_fight);
                 isWaiting=false;
                 toast("对方拒绝邀请!");
             }else if(content.equals("withdrawFight")){//对方撤回邀请
@@ -446,6 +446,7 @@ public class NetChatActivity extends BaseActivity implements ObseverListener{
             toast("请先撤回对战邀请再离开页面!");
             return false;
         }else{
+            startActivity(CatalogLoggedActivity.class, null, true);
             return super.onKeyDown(keyCode, event);
         }
     }
