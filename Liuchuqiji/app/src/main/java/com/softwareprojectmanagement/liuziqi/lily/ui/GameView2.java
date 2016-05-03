@@ -104,7 +104,7 @@ public class GameView2 extends AppCompatActivity {
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
-        linearParams.height = (screen_height*525/1000 / BOARDSIZE) * BOARDSIZE; //棋盘所占的权值
+        linearParams.height = screen_height*525/1000; //棋盘所占的权值
         itemSize=screen_height*525/1000 / BOARDSIZE;
         linearParams.width = linearParams.height;
         gv_gameView.setLayoutParams(linearParams);
@@ -299,7 +299,7 @@ public class GameView2 extends AppCompatActivity {
                     chessGridAdapter.notifyDataSetChanged();//更新数据,刷新
                     //判断胜负
                     if (checkWin(nowX, nowY)) {
-                        drawGameRes(playColor^3);
+                        drawGameRes(arr_board[nowX][nowY]);
                         if (arr_board[nowX][nowY] == WHITENUM) {
                             Toast.makeText(GameView2.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
                         } else {

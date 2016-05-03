@@ -79,12 +79,12 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
 //    @Bind(R.id.btn_withdraw_chess)
 //    Button btn_withdraw_chess;
-    @Bind(R.id.extra_message)
-    TextView extra_message;
-    @Bind(R.id.my_name)
-    TextView my_name;
-    @Bind(R.id.opponent_name)
-    TextView opponent_name;
+//    @Bind(R.id.extra_message)
+//    TextView extra_message;
+//    @Bind(R.id.my_name)
+//    TextView my_name;
+//    @Bind(R.id.opponent_name)
+//    TextView opponent_name;
     @Bind(R.id.gridview)
     GridView gv_gameView;
 
@@ -98,6 +98,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     private int playColor=BLACKNUM;
     private int myColor;
     private boolean isGameover=false;
+    private boolean isLose=false;
 
     //双方的总计时器和单步倒计时器
     private Chronometer whiteTimer,whiteStepTimer;
@@ -138,7 +139,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_net_fight);
+        setContentView(R.layout.include_board);
         //c= BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) getBundle().getSerializable("c"));
         Intent intent=this.getIntent();
         Bundle mybundle=intent.getBundleExtra("bundle");
@@ -160,9 +161,9 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
-        linearParams.height = (screen_width / BOARDSIZE) * BOARDSIZE;
+        linearParams.height = screen_height*525/1000;
         linearParams.width = linearParams.height;
-        itemSize=screen_height*525/1000 / BOARDSIZE;
+        itemSize=linearParams.height / BOARDSIZE;
 
         gv_gameView.setLayoutParams(linearParams);
         //为GridView设置适配器
@@ -284,7 +285,10 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
             @Override
             public void onClick(View v) {
                 if (!isGameover) {
+                    isLose=true;
                     drawGameRes(myColor^3);
+                    isGameover=true;
+                    sentNetFightMessage(0,LOSE);
                 }
             }
         });
@@ -402,9 +406,10 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         steps++;
                         view_steps.setText("第" + steps + "手");
                     }
+                    select=false;
                     //判断胜负
                     if (checkWin(nowX, nowY)) {
-                        drawGameRes(playColor ^ 3);
+                        drawGameRes(myColor);
                         if (arr_board[nowX][nowY] == myColor) {
                             Toast.makeText(NetFightActivity.this, "获胜！", Toast.LENGTH_SHORT).show();
                             //TODO:弹出win.jpg并可按返回按钮关闭dialog
@@ -455,17 +460,16 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         whiteStepTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                if(whiteStep>0)
+                if (whiteStep > 0)
                     whiteStep--;
-                else
-                {
+                else {
                     //倒计时到了直接交换颜色
                     changeTimer(playColor);
-                    playColor=playColor^3;
-                    whiteStep=stepTime;
+                    playColor = playColor ^ 3;
+                    whiteStep = stepTime;
 
                 }
-                chronometer.setText( "" + whiteStep+"s");
+                chronometer.setText("" + whiteStep + "s");
             }
         });
         blackStepTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -477,9 +481,9 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 else {
                     changeTimer(playColor);
                     playColor = playColor ^ 3;
-                    blackStep=stepTime;
+                    blackStep = stepTime;
                 }
-                chronometer.setText("" + blackStep+"s");
+                chronometer.setText("" + blackStep + "s");
             }
         });
         blackTimer.start();
@@ -536,7 +540,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 try {
                     jsonObject = new JSONObject(temp_color);
                     temp_color = jsonObject.get("COLOR").toString();
-                    extra_message.setText(temp_color);
+                  //  extra_message.setText(temp_color);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -565,7 +569,9 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 else if(temp_color_int==LOSE)
                 {
                     //处理对方认输
+                    isLose=true;
                     drawGameRes(myColor);
+                    isGameover=true;
                     //TODO:弹出win.jpg并可按返回按钮关闭dialog
                 }
                 else
@@ -617,7 +623,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     }
                     //判断胜负
                     if (checkWin(nowX, nowY)) {
-                        //drawGameRes(playColor ^ 3);
+                        drawGameRes(myColor^3);
                         if (arr_board[nowX][nowY] == WHITENUM) {
                             Toast.makeText(NetFightActivity.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
                         } else {
@@ -758,10 +764,20 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+        if (isGameover==false && keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             showDialog(1);
             return true;
-        } else
+        }else if(isGameover==false && keyCode == KeyEvent.KEYCODE_HOME)
+        {
+            showDialog(2);
+            return true;
+        }
+        else if(keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0)
+        {
+            startActivity(CatalogLoggedActivity.class, null, true);
+            return true;
+        }
+        else
             return super.onKeyDown(keyCode, event);
     }
 
@@ -777,9 +793,36 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
                                     dialog.dismiss();
-                                    android.os.Process
-                                            .killProcess(android.os.Process
-                                                    .myPid());
+                                    sentNetFightMessage(0, LOSE);
+                                    startActivity(CatalogLoggedActivity.class,null,true);
+                                    finish();
+
+                                }
+                            })
+                    .setNegativeButton("取消",
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+
+                                }
+                            }).create();
+
+        }
+        else if(id==2)
+        {
+            return new AlertDialog.Builder(NetFightActivity.this)
+                    .setMessage("是否确定认输并回到主页?")
+                    .setTitle("认输并回到主页")
+                    .setPositiveButton("确定",
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+                                    sentNetFightMessage(0, LOSE);
+                                    startActivity(CatalogLoggedActivity.class,null,true);
                                     finish();
 
                                 }
@@ -801,28 +844,36 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
     private void drawGameRes(int winColor)
     {
-        if(winColor==BLACKNUM)
+        if(isLose)
         {
-            view_steps.setText("游戏结束！黑方获胜！");
-            whiteStepTimer.stop();
-            whiteTimer.stop();
-            isGameover=true;
+            if(winColor==WHITENUM)
+            {
+                view_steps.setText("黑方认输！白方获胜！");
+            }
+            else
+            {
+                view_steps.setText("白方认输！黑方获胜！");
+            }
         }
-        else if(winColor==WHITENUM)
+        else
         {
-            view_steps.setText("游戏结束！白方获胜！");
-            blackStepTimer.stop();
-            blackTimer.stop();
-            isGameover=true;
+            if(winColor==BLACKNUM)
+            {
+                view_steps.setText("游戏结束！黑方获胜！");
+            }
+            else if(winColor==WHITENUM)
+            {
+                view_steps.setText("游戏结束！白方获胜！");
+            }
+            else if(winColor==KONGNUM)
+            {
+                view_steps.setText("游戏结束！平局！");
+            }
         }
-        else if(winColor==KONGNUM)
-        {
-            view_steps.setText("游戏结束！平局！");
-            whiteStepTimer.stop();
-            whiteTimer.stop();
-            blackStepTimer.stop();
-            blackTimer.stop();
-            isGameover=true;
-        }
+        isGameover=true;
+        whiteStepTimer.stop();
+        whiteTimer.stop();
+        blackStepTimer.stop();
+        blackTimer.stop();
     }
 }
