@@ -9,5 +9,6 @@ public class RuleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rule);
+        getSupportActionBar().hide();//隐藏toolbar
     }
 }

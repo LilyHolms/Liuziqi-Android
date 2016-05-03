@@ -27,7 +27,7 @@
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:src="@mipmap/head"
+            android:src="@drawable/ic_gameview_photo_black"
             android:scaleType="fitXY" />
 
         <LinearLayout
@@ -45,6 +45,7 @@
             android:focusable="true"
             android:minHeight="40dp"
             android:layout_marginLeft="5dp"
+            android:gravity="center"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/tv_message"
@@ -52,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:textColor="#1e1e1e"
-                android:gravity="left|center"
+                android:gravity="center"
                 android:lineSpacingExtra="3dp"
                 android:text="战书"
                 />

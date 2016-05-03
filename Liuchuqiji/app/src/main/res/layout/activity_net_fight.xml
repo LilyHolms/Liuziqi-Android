@@ -3,22 +3,23 @@
     android:layout_width= "match_parent"
     android:layout_height= "match_parent"
     android:orientation="vertical" >
-
-    <!--<TextView-->
-        <!--android:id="@+id/extra_message"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="额外信息"/>-->
-    <!--<TextView-->
-        <!--android:id="@+id/my_name"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="我的昵称"/>-->
-    <!--<TextView-->
-        <!--android:id="@+id/opponent_name"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="对手昵称"/>-->
+<!--
+    <TextView
+        android:id="@+id/extra_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="额外信息"/>
+    <TextView
+        android:id="@+id/my_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我的昵称"/>
+    <TextView
+        android:id="@+id/opponent_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="对手昵称"/>
+-->
 
     <include layout="@layout/include_board"/>
 

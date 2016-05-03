@@ -18,6 +18,7 @@ import cn.bmob.newim.bean.BmobIMSendStatus;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.v3.exception.BmobException;
+import model.UserModel;
 
 /**
  * 发送的文本类型
@@ -46,7 +47,7 @@ public class SendTextHolder extends BaseViewHolder implements View.OnClickListen
     public SendTextHolder(Context context, ViewGroup root,BmobIMConversation c,OnRecyclerViewListener listener) {
         super(context, root, R.layout.item_chat_sent_message, listener);
         this.c =c;
-
+        UserModel.getInstance().loadAvatar(context, iv_avatar);//头像
     }
 
     @Override

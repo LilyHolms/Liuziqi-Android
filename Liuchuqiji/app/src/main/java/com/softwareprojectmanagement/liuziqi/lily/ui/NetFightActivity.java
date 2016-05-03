@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
@@ -44,7 +45,9 @@ import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.newim.listener.ObseverListener;
 import cn.bmob.newim.notification.BmobNotificationManager;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import core.Config;
 import entity.NetFightMessage;
 import entity.User;
@@ -84,13 +87,24 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 //    @Bind(R.id.my_name)
 //    TextView my_name;
 //    @Bind(R.id.opponent_name)
-//    TextView opponent_name;
+
+    TextView opponent_name;
+
     @Bind(R.id.gridview)
     GridView gv_gameView;
+    @Bind(R.id.blackPhoto)
+    ImageView blackPhoto;
+    @Bind(R.id.whitePhoto)
+    ImageView whitePhoto;
+    @Bind(R.id.blackGrade)
+    TextView blackGrade;
+    @Bind(R.id.whiteGrade)
+    TextView whiteGrade;
 
     private ChessGridNetAdapter chessGridAdapter;
 
     BmobIMConversation c;
+    private User oppo_User;//对手User
 
     private int chessSum=0;//下了第几个棋，每方走两个棋子
     private int getSum=0;  //收到了几个棋子
@@ -146,8 +160,51 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         c=BmobIMConversation.obtain(BmobIMClient.getInstance(), (BmobIMConversation) mybundle.getSerializable("c"));
         myColor=intent.getIntExtra("myColor", 1);
         stepTime=intent.getIntExtra("waitTime",30);
+        queryOppUser();
         initView();
         myGame();
+    }
+
+    public void queryOppUser(){
+        BmobQuery<User> query = new BmobQuery<User>();
+        query.addWhereEqualTo("username", c.getConversationTitle());
+        //执行查询方法
+        query.findObjects(this, new FindListener<User>() {
+            @Override
+            public void onSuccess(List<User> object) {
+                // TODO Auto-generated method stub
+//                toast("对手信息查询成功：共" + object.size() + "条数据。");
+                if (object.size() > 0) {
+                    oppo_User = object.get(0);
+                    init_user_infor();
+                }
+            }
+
+            @Override
+            public void onError(int code, String msg) {
+                // TODO Auto-generated method stub
+                toast("查询失败：" + msg);
+            }
+        });
+    }
+    public void init_user_infor(){
+        if(myColor==BLACKNUM){//如果本人执黑子
+            view_blackID.setText(UserModel.getInstance().getCurrentUser().getUsername());
+            blackGrade.setText("积分:" + UserModel.getInstance().getPoints());
+            UserModel.getInstance().loadAvatar(this, blackPhoto);
+
+            view_whiteID.setText(c.getConversationTitle());
+            whiteGrade.setText("积分:" + oppo_User.getPoints());
+            oppo_User.loadAvatar(this, whitePhoto);
+        }else{//如果本人执白子
+            view_whiteID.setText(UserModel.getInstance().getCurrentUser().getUsername());
+            whiteGrade.setText("积分:"+UserModel.getInstance().getPoints());
+            UserModel.getInstance().loadAvatar(this, whitePhoto);
+
+            view_blackID.setText(c.getConversationTitle());
+            blackGrade.setText("积分:"+oppo_User.getPoints());
+            oppo_User.loadAvatar(this, blackPhoto);
+        }
     }
 
     void initView() {
@@ -161,6 +218,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
+
         linearParams.height = screen_height*525/1000;
         linearParams.width = linearParams.height;
         itemSize=linearParams.height / BOARDSIZE;
@@ -173,6 +231,16 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         view_steps=(TextView)this.findViewById(R.id.text_playturn);
         view_blackID=(TextView)this.findViewById(R.id.blackRes);
         view_whiteID=(TextView)this.findViewById(R.id.whiteRes);
+
+//        //显示玩家本人username
+//        User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
+//        view_blackID.setText(user.getUsername());
+//        //显示对方username
+//        view_whiteID.setText(c.getConversationTitle());
+
+
+
+
 
 //        //注册监听事件
 //        gv_gameView.setOnItemClickListener(new AdapterView.OnItemClickListener() {//落子
@@ -244,12 +312,6 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 //                }
 //            }
 //        });
-
-        //显示玩家本人username
-        User user = UserModel.getInstance().getCurrentUser();//UserModel类用到了传说中的单例模式
-        view_blackID.setText(user.getUsername());
-        //显示对方username
-        view_whiteID.setText(c.getConversationTitle());
 
         //绑定各个按钮事件，本地游戏隐藏聊按钮
         btn_return=(Button)this.findViewById(R.id.btn_return);
@@ -540,7 +602,8 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                 try {
                     jsonObject = new JSONObject(temp_color);
                     temp_color = jsonObject.get("COLOR").toString();
-                  //  extra_message.setText(temp_color);
+
+//                    extra_message.setText(temp_color);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

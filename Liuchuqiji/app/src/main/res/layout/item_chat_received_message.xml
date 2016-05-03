@@ -28,7 +28,7 @@
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:src="@mipmap/head"
+            android:src="@drawable/ic_gameview_photo_black"
             android:scaleType="fitXY" />
 
         <TextView
