@@ -24,7 +24,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
             android:layout_gravity="center"
-            android:src="@drawable/default_avatar"/>
+            android:src="@drawable/ic_gameview_photo_white"/>
         <TextView
             android:id="@+id/tv_my_username"
             android:layout_width="wrap_content"

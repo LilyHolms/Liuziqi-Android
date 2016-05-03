@@ -19,14 +19,16 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="内容"
-            android:id="@+id/et_content"/>
+            android:hint="请输入消息..."
+            android:id="@+id/et_content"
+            android:background="@drawable/ic_input"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_send"
             android:onClick="onClick"
-            android:text="发送"/>
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/ic_chat_btn_send"/>
     </LinearLayout>
 
 

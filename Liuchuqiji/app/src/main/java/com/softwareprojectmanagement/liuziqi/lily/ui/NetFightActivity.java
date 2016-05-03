@@ -9,6 +9,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -46,8 +47,10 @@ import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.newim.listener.ObseverListener;
 import cn.bmob.newim.notification.BmobNotificationManager;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 import core.Config;
 import entity.NetFightMessage;
 import entity.User;
@@ -189,20 +192,21 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
     }
     public void init_user_infor(){
         if(myColor==BLACKNUM){//如果本人执黑子
-            view_blackID.setText(UserModel.getInstance().getCurrentUser().getUsername());
-            blackGrade.setText("积分:" + UserModel.getInstance().getPoints());
+            //TODO:暂时把积分和用户名颠倒了
+            view_blackID.setText("积分:" + UserModel.getInstance().getPoints());
+            blackGrade.setText(UserModel.getInstance().getCurrentUser().getUsername());
             UserModel.getInstance().loadAvatar(this, blackPhoto);
 
-            view_whiteID.setText(c.getConversationTitle());
-            whiteGrade.setText("积分:" + oppo_User.getPoints());
+            whiteGrade.setText(c.getConversationTitle());
+            view_whiteID.setText("积分:" + oppo_User.getPoints());
             oppo_User.loadAvatar(this, whitePhoto);
         }else{//如果本人执白子
-            view_whiteID.setText(UserModel.getInstance().getCurrentUser().getUsername());
-            whiteGrade.setText("积分:"+UserModel.getInstance().getPoints());
+            whiteGrade.setText(UserModel.getInstance().getCurrentUser().getUsername());
+            view_whiteID.setText("积分:" + UserModel.getInstance().getPoints());
             UserModel.getInstance().loadAvatar(this, whitePhoto);
 
-            view_blackID.setText(c.getConversationTitle());
-            blackGrade.setText("积分:"+oppo_User.getPoints());
+            blackGrade.setText(c.getConversationTitle());
+            view_blackID.setText("积分:"+oppo_User.getPoints());
             oppo_User.loadAvatar(this, blackPhoto);
         }
     }
@@ -218,12 +222,11 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
-
-        linearParams.height = screen_height*525/1000;
+        linearParams.height = (screen_height*490/1000/BOARDSIZE)*BOARDSIZE;
         linearParams.width = linearParams.height;
-        itemSize=linearParams.height / BOARDSIZE;
-
+        itemSize=linearParams.height/BOARDSIZE;
         gv_gameView.setLayoutParams(linearParams);
+
         //为GridView设置适配器
         chessGridAdapter = new ChessGridNetAdapter(this, linearParams.width,arr_board);//lily
         gv_gameView.setAdapter(chessGridAdapter);
@@ -939,4 +942,37 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
         blackStepTimer.stop();
         blackTimer.stop();
     }
+
+    /**
+     * 联网对战更新分数
+     * @param isWin 1为胜利,-1为败,0为平局,
+     *              ps:平局也需要更新总共比赛场数
+     */
+    public void updateScore(int isWin){
+
+        int eachValue = 5;
+        final User newUser = new User();
+        newUser.setNickname("sss");
+        User bmobUser = UserModel.getInstance().getCurrentUser();
+        newUser.setAllNum(bmobUser.getAllNum()+1);
+        newUser.setWinNum(bmobUser.getWinNum() + isWin);
+        newUser.setPoints(bmobUser.getPoints() + isWin * eachValue);
+        //因为CatalogLogged页面的积分没查数据库,所以也更新一下这个
+        UserModel.getInstance().getCurrentUser().setPoints(newUser.getPoints());
+
+        newUser.update(this, bmobUser.getObjectId(), new UpdateListener() {
+            @Override
+            public void onSuccess() {
+                // TODO Auto-generated method stub
+                Log.i("score", "更新成功!");
+
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+                // TODO Auto-generated method stub
+                Log.i("score", "更新失败!");            }
+        });
+    }
+
 }

@@ -115,10 +115,9 @@ public class GameView extends AppCompatActivity {
 
         //因为gridview每个小格子的长宽必须是整数,所以设置重新设置一下棋盘的大小
         LinearLayout.LayoutParams linearParams =(LinearLayout.LayoutParams) gv_gameView.getLayoutParams();
-        linearParams.height = screen_height*525/1000;
-
+        linearParams.height = (screen_height*490/1000/BOARDSIZE)*BOARDSIZE;
         linearParams.width = linearParams.height;
-        itemSize=screen_height*490/1000/ BOARDSIZE;
+        itemSize=linearParams.height/BOARDSIZE;
         gv_gameView.setLayoutParams(linearParams);
 
         //为GridView设置适配器
