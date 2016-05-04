@@ -354,6 +354,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     drawGameRes(myColor^3);
                     isGameover=true;
                     sentNetFightMessage(0,LOSE);
+                    updateScore(-1);
                 }
             }
         });
@@ -475,13 +476,14 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     //判断胜负
                     if (checkWin(nowX, nowY)) {
                         drawGameRes(myColor);
-                        if (arr_board[nowX][nowY] == myColor) {
+                        if (arr_board[nowX][nowY] == myColor+3) {
                             Toast.makeText(NetFightActivity.this, "获胜！", Toast.LENGTH_SHORT).show();
                             //TODO:弹出win.jpg并可按返回按钮关闭dialog
-
+                            updateScore(1);
                         } else {
                             Toast.makeText(NetFightActivity.this, "失败！", Toast.LENGTH_SHORT).show();
                             //TODO:弹出lose.jpg并可按返回按钮关闭dialog
+                            updateScore(-1);
                         }
 
                     } else if (chechDraw()) {
@@ -639,6 +641,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     drawGameRes(myColor);
                     isGameover=true;
                     //TODO:弹出win.jpg并可按返回按钮关闭dialog
+                    updateScore(1);
                 }
                 else
                 {
@@ -690,10 +693,10 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     //判断胜负
                     if (checkWin(nowX, nowY)) {
                         drawGameRes(myColor^3);
-                        if (arr_board[nowX][nowY] == WHITENUM) {
-                            Toast.makeText(NetFightActivity.this, "游戏结束！白方获胜！", Toast.LENGTH_SHORT).show();
+                        if (arr_board[nowX][nowY] == myColor+3) {
+                            updateScore(1);
                         } else {
-                            Toast.makeText(NetFightActivity.this, "游戏结束！黑方获胜！", Toast.LENGTH_SHORT).show();
+                            updateScore(-1);
                         }
                     } else if (chechDraw()) {
                         //drawGameRes(KONGNUM);
@@ -860,8 +863,9 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                                                     int which) {
                                     dialog.dismiss();
                                     sentNetFightMessage(0, LOSE);
+                                    updateScore(-1);
                                     startActivity(CatalogLoggedActivity.class,null,true);
-                                    finish();
+                                    //finish();
 
                                 }
                             })
@@ -888,7 +892,8 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                                                     int which) {
                                     dialog.dismiss();
                                     sentNetFightMessage(0, LOSE);
-                                    startActivity(CatalogLoggedActivity.class,null,true);
+                                    updateScore(-1);
+
                                     finish();
 
                                 }
@@ -952,7 +957,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
 
         int eachValue = 5;
         final User newUser = new User();
-        newUser.setNickname("sss");
+        //newUser.setNickname("sss");
         User bmobUser = UserModel.getInstance().getCurrentUser();
         newUser.setAllNum(bmobUser.getAllNum()+1);
         newUser.setWinNum(bmobUser.getWinNum() + isWin);
