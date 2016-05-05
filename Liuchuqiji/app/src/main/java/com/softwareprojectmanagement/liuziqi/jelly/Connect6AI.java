@@ -277,6 +277,8 @@ public class Connect6AI {
         myStack[depth].allMove[bestIndex]=myStack[depth].allMove[0];
         myStack[depth].allMove[0]=bestMove;
 
+        myStack[depth].len=myStack[depth].len>100?100:myStack[depth].len;
+
         for (int i = 0; i < myStack[depth].len; i++)
         {
             makeMove(myStack[depth].allMove[i], color);
@@ -339,10 +341,11 @@ public class Connect6AI {
                 }
             }
         }
-        myStack[depth].len=myStack[depth].len>50?50:myStack[depth].len;
+        myStack[depth].len=myStack[depth].len>30?30:myStack[depth].len;
 //        myStack[depth].allMove[bestIndex]=myStack[depth].allMove[0];
 //        myStack[depth].allMove[0]=bestMove;
         alpha=-INF;
+        int best=-1;
         for(int i=0;i<myStack[depth].len;i++)
         {
             makeMove(myStack[depth].allMove[i],myColor);
@@ -350,10 +353,12 @@ public class Connect6AI {
             unMakeMove(myStack[depth].allMove[i]);
             if(val>alpha)
             {
+                best=i;
                 alpha=val;
                 bestMove=myStack[depth].allMove[i];
             }
         }
+        System.out.println(">>>>bestMove:"+best);
         return bestMove;
     }
 

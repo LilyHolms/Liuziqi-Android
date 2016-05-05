@@ -211,8 +211,8 @@ public class GameView extends AppCompatActivity {
                         }
                     }
                     case MotionEvent.ACTION_MOVE: {
-                        selX += (event.getY() - downX);
-                        selY += (event.getX() - downY);
+                        selX += 0.3*(event.getY() - downX);
+                        selY += 0.3*(event.getX() - downY);
                         downX = event.getY();
                         downY = event.getX();
                         int nowPosX = (int) (selX / itemSize);

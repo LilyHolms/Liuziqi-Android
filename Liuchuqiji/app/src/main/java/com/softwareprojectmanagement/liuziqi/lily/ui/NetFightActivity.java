@@ -383,8 +383,8 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                         }
                     }
                     case MotionEvent.ACTION_MOVE: {
-                        selX += (event.getY() - downX);
-                        selY += (event.getX() - downY);
+                        selX += 0.3*(event.getY() - downX);
+                        selY += 0.3*(event.getX() - downY);
                         downX = event.getY();
                         downY = event.getX();
                         int nowPosX = (int) (selX / itemSize);
@@ -649,7 +649,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                     getSum++;
 
                     //根据当前玩家颜色来落对应的子
-                    if (playColor == BLACKNUM) {
+                    if (temp_color_int == BLACKLAST) {
                         arr_board[nowX][nowY] = BLACKLAST;
                         lastBlack.x[getSum - 1] = nowX;
                         lastBlack.y[getSum - 1] = nowY;
@@ -659,7 +659,7 @@ public class NetFightActivity extends BaseActivity  implements ObseverListener {
                                 arr_board[lastWhite.x[i]][lastWhite.y[i]] = WHITENUM;
                             }
                         }
-                    } else if (playColor == WHITENUM) {
+                    } else if (temp_color_int == WHITELAST) {
                         arr_board[nowX][nowY] = WHITELAST;
                         lastWhite.x[getSum - 1] = nowX;
                         lastWhite.y[getSum - 1] = nowY;

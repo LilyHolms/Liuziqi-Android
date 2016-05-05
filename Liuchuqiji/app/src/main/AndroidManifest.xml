@@ -38,7 +38,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GameView" >
+        <activity android:name=".GameView"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".LoginActivity" >
         </activity>
@@ -46,11 +47,13 @@
         </activity>
         <activity android:name=".SearchUserActivity" >
         </activity>
-        <activity android:name=".GameView2" >
+        <activity android:name=".GameView2"
+        android:screenOrientation="portrait">
         </activity>
         <activity android:name=".NetChatActivity" >
         </activity>
-        <activity android:name=".NetFightActivity" >
+        <activity android:name=".NetFightActivity"
+            android:screenOrientation="portrait">
         </activity>
         <!-- 设置bmob appkey -->
         <meta-data
